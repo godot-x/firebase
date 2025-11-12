@@ -15,7 +15,7 @@ embedded=[
 ]
 system=["UserNotifications.framework", "UIKit.framework", "Foundation.framework"]
 
-capabilities=["push_notifications"]
+capabilities=[]
 
 files=[]
 
