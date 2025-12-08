@@ -148,7 +148,7 @@ unsign-sdk:
 # Apple (iOS) Build Targets
 # ============================================================================
 
-setup-apple: setup-godot setup-firebase
+setup-apple: setup-godot
 	@echo "====================================================================="
 	@echo "Setting up Apple (iOS) dependencies..."
 	@echo "====================================================================="
