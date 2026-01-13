@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         minSdk = 21
+        consumerProguardFiles("proguard-firebase.pro")
     }
 
     buildTypes {
