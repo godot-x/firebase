@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    compileOnly("org.godotengine:godot:4.5.0.stable")
+    compileOnly("org.godotengine:godot:4.5.1.stable")
 
     // Firebase Crashlytics
     implementation("com.google.firebase:firebase-crashlytics:20.0.3")
