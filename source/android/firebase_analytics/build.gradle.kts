@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         minSdk = 21
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -29,7 +30,7 @@ android {
 
 dependencies {
     compileOnly("org.godotengine:godot:4.2.2.stable")
-    
+
     // Firebase Analytics
     implementation("com.google.firebase:firebase-analytics:23.0.0")
 }

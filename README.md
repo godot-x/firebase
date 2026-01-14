@@ -65,18 +65,39 @@ This project provides native Firebase plugins for Godot, built as separate modul
 
 #### Option B: Manual Installation
 
-1. **Copy the plugin** to your Godot project:
+1. **Download the ZIP** from [Releases](https://github.com/godot-x/firebase/releases)
+
+2. **Extract the ZIP** - it contains 3 folders:
    ```
-   your_project/
-   └── addons/
-       └── godotx_firebase/  # Copy this folder
+   godotx_firebase/
+   ├── addons/
+   ├── ios/
+   └── android/
    ```
 
-2. **Enable the plugin** in Godot:
+3. **Copy all 3 folders** to your Godot project root:
+   ```
+   your_project/
+   ├── addons/
+   │   └── godotx_firebase/
+   ├── ios/
+   │   └── plugins/
+   │       ├── firebase_core/
+   │       ├── firebase_analytics/
+   │       ├── firebase_crashlytics/
+   │       └── firebase_messaging/
+   └── android/
+       ├── firebase_core/
+       ├── firebase_analytics/
+       ├── firebase_crashlytics/
+       └── firebase_messaging/
+   ```
+
+4. **Enable the plugin** in Godot:
    - Open **Project → Project Settings → Plugins**
    - Enable "Godotx Firebase"
 
-3. **Add Firebase config files** to your project root:
+5. **Add Firebase config files** to your project root:
    - Download from [Firebase Console](https://console.firebase.google.com/)
    - iOS: `GoogleService-Info.plist`
    - Android: `google-services.json`
@@ -126,7 +147,7 @@ This project provides native Firebase plugins for Godot, built as separate modul
    apply plugin: 'com.google.firebase.crashlytics'
    ```
 
-### Export Filters (Recommended)
+### 4. Export Filters (Recommended)
 
 Some project files may be copied to the final APK/AAB/IPA assets folder unnecessarily. To reduce app size and avoid including development files, add these patterns to **Filters to exclude files/folders from project** in your export preset:
 
@@ -140,7 +161,7 @@ This excludes:
 - `addons/godotx_firebase/` - Export plugin scripts (not needed at runtime)
 - `build/` - Build output directory
 
-### 4. Test the Integration
+### 5. Test the Integration
 
 Run the included test scene to verify everything works:
 ```
@@ -318,6 +339,39 @@ func _on_error(message: String):
 - **iOS APNs:** On iOS, Firebase Messaging uses method swizzling to automatically handle APNs registration. The APNs token is captured by Firebase internally and can be accessed via the `get_apns_token()` method after calling `request_permission()`.
 
 ## Advanced Configuration
+
+### Android R8/ProGuard Minification
+
+By default, R8 minification is **disabled** in release builds. If you want to enable it for smaller APK/AAB sizes, follow these steps:
+
+1. **Edit `android/build/build.gradle`** and enable minification in the release build type:
+
+   ```gradle
+   android {
+       buildTypes {
+           release {
+               minifyEnabled true
+               shrinkResources true
+               proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+           }
+       }
+   }
+   ```
+
+2. **Create `android/build/proguard-rules.pro`** with the following content:
+
+   ```proguard
+   ####################################
+   # Godot JNI
+   ####################################
+   -keep class org.godotengine.godot.** { *; }
+   -dontwarn org.godotengine.godot.**
+   ```
+
+**Important Notes:**
+- Firebase ProGuard rules are already included in each module (via `consumerProguardFiles`)
+- Only add custom rules if you encounter issues with other libraries
+- Test thoroughly after enabling minification to ensure everything works correctly
 
 ### Android Notification Icon
 

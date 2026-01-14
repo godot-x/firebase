@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         minSdk = 21
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -29,7 +30,7 @@ android {
 
 dependencies {
     compileOnly("org.godotengine:godot:4.2.2.stable")
-    
+
     // Firebase Messaging
     implementation("com.google.firebase:firebase-messaging:25.0.1")
 }
