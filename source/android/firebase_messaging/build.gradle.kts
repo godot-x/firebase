@@ -29,7 +29,7 @@ android {
 }
 
 dependencies {
-    compileOnly("org.godotengine:godot:4.5.stable")
+    compileOnly("org.godotengine:godot:4.2.2.stable")
 
     // Firebase Messaging
     implementation("com.google.firebase:firebase-messaging:25.0.1")

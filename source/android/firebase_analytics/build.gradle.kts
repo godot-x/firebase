@@ -29,7 +29,7 @@ android {
 }
 
 dependencies {
-    compileOnly("org.godotengine:godot:4.5.stable")
+    compileOnly("org.godotengine:godot:4.2.2.stable")
 
     // Firebase Analytics
     implementation("com.google.firebase:firebase-analytics:23.0.0")
