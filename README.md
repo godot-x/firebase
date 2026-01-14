@@ -340,6 +340,39 @@ func _on_error(message: String):
 
 ## Advanced Configuration
 
+### Android R8/ProGuard Minification
+
+By default, R8 minification is **disabled** in release builds. If you want to enable it for smaller APK/AAB sizes, follow these steps:
+
+1. **Edit `android/build/build.gradle`** and enable minification in the release build type:
+
+   ```gradle
+   android {
+       buildTypes {
+           release {
+               minifyEnabled true
+               shrinkResources true
+               proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+           }
+       }
+   }
+   ```
+
+2. **Create `android/build/proguard-rules.pro`** with the following content:
+
+   ```proguard
+   ####################################
+   # Godot JNI
+   ####################################
+   -keep class org.godotengine.godot.** { *; }
+   -dontwarn org.godotengine.godot.**
+   ```
+
+**Important Notes:**
+- Firebase ProGuard rules are already included in each module (via `consumerProguardFiles`)
+- Only add custom rules if you encounter issues with other libraries
+- Test thoroughly after enabling minification to ensure everything works correctly
+
 ### Android Notification Icon
 
 To customize the notification icon for Firebase Cloud Messaging, see:
