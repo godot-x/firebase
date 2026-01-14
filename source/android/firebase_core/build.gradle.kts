@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.library") version "8.2.2"
-    id("org.jetbrains.kotlin.android") version "2.1.0"
+    id("com.android.library") version "8.13.2"
+    id("org.jetbrains.kotlin.android") version "2.3.0"
 }
 
 android {
@@ -23,13 +23,15 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+        }
     }
 }
 
 dependencies {
-    compileOnly("org.godotengine:godot:4.2.2.stable")
+    compileOnly("org.godotengine:godot:4.5.0.stable")
 
     // Firebase Core
     implementation("com.google.firebase:firebase-common:22.0.1")

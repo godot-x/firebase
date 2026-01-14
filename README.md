@@ -49,7 +49,7 @@ This project provides native Firebase plugins for Godot, built as separate modul
 | firebase-crashlytics-ndk | 20.0.3 |
 | firebase-messaging | 25.0.1 |
 | firebase-common | 22.0.1 |
-| Kotlin | 2.1.0 |
+| Kotlin | 2.3.0 |
 | Min Android SDK | 24 (Android 7.0) |
 
 ## Quick Start
@@ -131,7 +131,7 @@ This project provides native Firebase plugins for Godot, built as separate modul
    buildscript {
        dependencies {
            // Add if not present
-           classpath 'com.google.gms:google-services:4.4.2'
+           classpath 'com.google.gms:google-services:4.4.4'
 
            // Add this if using Crashlytics (required for crash reports)
            classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.6'
@@ -602,7 +602,7 @@ make unsign-firebase
 - Check console for initialization errors
 
 **Kotlin version errors (Android)**
-- Project uses Kotlin 2.1.0 (matches Firebase SDK 33.5.1)
+- Project uses Kotlin version that matches Firebase SDK
 - Update `build.gradle.kts` if using different Godot version
 
 ## API Reference
