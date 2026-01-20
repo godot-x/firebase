@@ -113,10 +113,9 @@ func _on_log_event_pressed() -> void:
 			"screen": "main",
 			"test_value": "42"
 		}
-		var params_json = JSON.stringify(params)
 		log_message("\n[Analytics] Logging event: " + event_name)
-		log_message("  Params: " + params_json)
-		analytics.log_event(event_name, params_json)
+		log_message("  Params: " + str(params))
+		analytics.log_event(event_name, params)
 	else:
 		log_message("[Analytics] Plugin not available")
 
@@ -126,10 +125,9 @@ func _on_log_screen_pressed() -> void:
 			"screen_name": "main_screen",
 			"screen_class": "MainScene"
 		}
-		var params_json = JSON.stringify(params)
 		log_message("\n[Analytics] Logging screen view")
-		log_message("  Params: " + params_json)
-		analytics.log_event("screen_view", params_json)
+		log_message("  Params: " + str(params))
+		analytics.log_event("screen_view", params)
 	else:
 		log_message("[Analytics] Plugin not available")
 

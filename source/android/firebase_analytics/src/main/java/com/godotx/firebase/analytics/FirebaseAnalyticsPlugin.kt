@@ -8,6 +8,7 @@ import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.SignalInfo
 import org.godotengine.godot.plugin.UsedByGodot
 import org.json.JSONObject
+import org.godotengine.godot.Dictionary
 
 class FirebaseAnalyticsPlugin(godot: Godot) : GodotPlugin(godot) {
 
@@ -27,13 +28,16 @@ class FirebaseAnalyticsPlugin(godot: Godot) : GodotPlugin(godot) {
 
     override fun getPluginSignals(): Set<SignalInfo> {
         return setOf(
-            SignalInfo("analytics_initialized",
+            SignalInfo(
+                "analytics_initialized",
                 Boolean::class.javaObjectType
             ),
-            SignalInfo("analytics_event_logged",
+            SignalInfo(
+                "analytics_event_logged",
                 String::class.java
             ),
-            SignalInfo("analytics_error",
+            SignalInfo(
+                "analytics_error",
                 String::class.java
             )
         )
@@ -60,7 +64,7 @@ class FirebaseAnalyticsPlugin(godot: Godot) : GodotPlugin(godot) {
     }
 
     @UsedByGodot
-    fun log_event(event_name: String, params_json: String) {
+    fun log_event(event_name: String, params: Dictionary) {
         val analytics = firebaseAnalytics
         if (analytics == null) {
             Log.e(TAG, "Firebase Analytics not initialized")
@@ -69,19 +73,30 @@ class FirebaseAnalyticsPlugin(godot: Godot) : GodotPlugin(godot) {
         }
 
         try {
-            val params = if (params_json.isNotEmpty()) JSONObject(params_json) else JSONObject()
             val bundle = Bundle()
 
-            val keys = params.keys()
-            while (keys.hasNext()) {
-                val key = keys.next()
-                val value = params.get(key)
+            for (key in params.keys) {
+                val value = params[key]
+
+                // firebase parameter names must be strings
+                if (key !is String || value == null) {
+                    continue
+                }
+
                 when (value) {
                     is Int -> bundle.putInt(key, value)
                     is Long -> bundle.putLong(key, value)
+                    is Float -> bundle.putDouble(key, value.toDouble())
                     is Double -> bundle.putDouble(key, value)
-                    is Boolean -> bundle.putBoolean(key, value)
-                    else -> bundle.putString(key, value.toString())
+                    is Boolean -> {
+                        // firebase analytics does NOT support boolean
+                        bundle.putInt(key, if (value) 1 else 0)
+                    }
+                    is String -> bundle.putString(key, value)
+                    else -> {
+                        // unsupported types are silently ignored
+                        Log.w(TAG, "Unsupported param type for key=$key (${value::class.java})")
+                    }
                 }
             }
 

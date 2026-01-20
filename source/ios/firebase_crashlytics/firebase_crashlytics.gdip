@@ -9,22 +9,13 @@ deinitialization="uninitialize_godotx_firebase_crashlytics_module"
 [dependencies]
 
 linked=[]
-embedded=[
-    "FirebaseCoreExtension.xcframework",
-    "FirebaseCrashlytics.xcframework",
-    "FirebaseRemoteConfigInterop.xcframework",
-    "FirebaseSessions.xcframework",
-    "GoogleDataTransport.xcframework",
-    "Promises.xcframework"
-]
+
+embedded=["FirebaseCoreExtension.xcframework", "FirebaseCrashlytics.xcframework", "FirebaseRemoteConfigInterop.xcframework", "FirebaseSessions.xcframework", "GoogleDataTransport.xcframework", "Promises.xcframework"]
+
 system=["UserNotifications.framework", "UIKit.framework", "Foundation.framework"]
 
 capabilities=[]
 
 files=[]
 
-linker_flags=[
-    "-ObjC",
-    "-L$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$(PLATFORM_NAME)"
-]
-
+linker_flags=["-ObjC", "-L$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$(PLATFORM_NAME)"]
