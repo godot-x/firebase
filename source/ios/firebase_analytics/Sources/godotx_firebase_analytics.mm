@@ -33,7 +33,8 @@ static NSDictionary* dictionary_to_nsdict(const Dictionary& dict) {
         } else if (value.get_type() == Variant::FLOAT) {
             nsDict[nsKey] = @((double)value);
         } else if (value.get_type() == Variant::BOOL) {
-            nsDict[nsKey] = @((bool)value);
+            // firebase analytics does NOT support boolean
+            nsDict[nsKey] = @((bool)value ? 1 : 0);
         }
     }
 

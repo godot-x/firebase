@@ -239,7 +239,7 @@ func _on_analytics_initialized(success: bool):
     if success:
         # Now you can log events
         var params = {"level": "5", "score": "1000"}
-        analytics.log_event("level_complete", JSON.stringify(params))
+        analytics.log_event("level_complete", params)
 ```
 
 ### Firebase Crashlytics
