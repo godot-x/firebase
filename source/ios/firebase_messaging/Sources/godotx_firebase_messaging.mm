@@ -33,6 +33,7 @@ GodotxFirebaseMessaging *GodotxFirebaseMessaging::instance = nullptr;
 static GodotxFirebaseMessagingDelegate *messagingDelegate = nil;
 
 void GodotxFirebaseMessaging::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("initialize"), &GodotxFirebaseMessaging::initialize);
     ClassDB::bind_method(D_METHOD("request_permission"), &GodotxFirebaseMessaging::request_permission);
     ClassDB::bind_method(D_METHOD("get_token"), &GodotxFirebaseMessaging::get_token);
     ClassDB::bind_method(D_METHOD("get_apns_token"), &GodotxFirebaseMessaging::get_apns_token);
@@ -54,29 +55,33 @@ GodotxFirebaseMessaging *GodotxFirebaseMessaging::get_singleton() {
 GodotxFirebaseMessaging::GodotxFirebaseMessaging() {
     ERR_FAIL_COND(instance != nullptr);
     instance = this;
-
-    [FIRMessaging messaging].autoInitEnabled = YES;
-    NSLog(@"[GodotxFirebaseMessaging] Auto init enabled");
-
-    if (messagingDelegate == nil) {
-        messagingDelegate = [[GodotxFirebaseMessagingDelegate alloc] init];
-        [FIRMessaging messaging].delegate = messagingDelegate;
-        NSLog(@"[GodotxFirebaseMessaging] Messaging delegate configured");
-    }
-
-    [[GodotxAPNDelegate shared] registerAsNotificationCenterDelegate];
-
     NSLog(@"[GodotxFirebaseMessaging] Created");
 }
 
 GodotxFirebaseMessaging::~GodotxFirebaseMessaging() {
     if (instance == this) {
-        [FIRMessaging messaging].delegate = nil;
-        [UNUserNotificationCenter currentNotificationCenter].delegate = nil;
-        messagingDelegate = nil;
-        NSLog(@"[GodotxFirebaseMessaging] Delegates cleared");
         instance = nullptr;
     }
+}
+
+void GodotxFirebaseMessaging::initialize() {
+    NSLog(@"[GodotxFirebaseMessaging] Initializing...");
+
+    if (![FIRApp defaultApp]) {
+        NSLog(@"[GodotxFirebaseMessaging] Firebase core not ready");
+        return;
+    }
+
+    if (messagingDelegate == nil) {
+        [FIRMessaging messaging].autoInitEnabled = YES;
+        messagingDelegate = [[GodotxFirebaseMessagingDelegate alloc] init];
+        [FIRMessaging messaging].delegate = messagingDelegate;
+        NSLog(@"[GodotxFirebaseMessaging] Messaging delegate configured");
+    }
+
+    [[GodotxAPNDelegate shared] activateNotificationCenterDelegate];
+
+    NSLog(@"[GodotxFirebaseMessaging] Initialized");
 }
 
 void GodotxFirebaseMessaging::request_permission() {

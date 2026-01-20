@@ -87,6 +87,9 @@ func _on_core_initialized(success: bool) -> void:
 		if analytics:
 			log_message("[Analytics] Initializing...")
 			analytics.initialize()
+		if messaging:
+			log_message("[Messaging] Initializing...")
+			messaging.initialize()
 	else:
 		log_message("[Core] ✗ Firebase initialization failed")
 		update_status("Initialization Failed", Color.RED)

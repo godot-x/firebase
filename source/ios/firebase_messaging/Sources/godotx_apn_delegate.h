@@ -7,7 +7,7 @@
 @interface GodotxAPNDelegate : NSObject <UIApplicationDelegate, UNUserNotificationCenterDelegate>
 
 + (instancetype)shared;
-- (void)registerAsNotificationCenterDelegate;
+- (void)activateNotificationCenterDelegate;
 
 @end
 

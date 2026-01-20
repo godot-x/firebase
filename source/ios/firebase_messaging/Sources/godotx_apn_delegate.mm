@@ -35,6 +35,11 @@ static APNDelegateInitializer initializer;
     return self;
 }
 
+- (void)activateNotificationCenterDelegate {
+    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+    NSLog(@"[GodotxAPNDelegate] UNUserNotificationCenter delegate activated");
+}
+
 + (instancetype)shared {
     static GodotxAPNDelegate *sharedInstance = nil;
     static dispatch_once_t onceToken;
@@ -47,16 +52,12 @@ static APNDelegateInitializer initializer;
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSLog(@"[GodotxAPNDelegate] Received APN device token");
 
-    // Set APNs token in Firebase Messaging
-    [FIRMessaging messaging].APNSToken = deviceToken;
+    if (![FIRApp defaultApp]) {
+        NSLog(@"[GodotxAPNDelegate] Firebase not configured yet, skipping APNs token");
+        return;
+    }
 
-#if DEBUG
-    [FIRMessaging messaging].APNSTokenType = FIRMessagingAPNSTokenTypeSandbox;
-    NSLog(@"[GodotxAPNDelegate] APNs token type set to Sandbox");
-#else
-    [FIRMessaging messaging].APNSTokenType = FIRMessagingAPNSTokenTypeProd;
-    NSLog(@"[GodotxAPNDelegate] APNs token type set to Production");
-#endif
+    [FIRMessaging messaging].APNSToken = deviceToken;
 
     NSString *token = APNSTokenToString(deviceToken);
     NSLog(@"[GodotxAPNDelegate] APN Token: %@", token);
@@ -77,11 +78,6 @@ static APNDelegateInitializer initializer;
             GodotxFirebaseMessaging::instance->emit_signal("messaging_error", error_msg);
         }
     });
-}
-
-- (void)registerAsNotificationCenterDelegate {
-    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
-    NSLog(@"[GodotxAPNDelegate] Registered as UNUserNotificationCenter delegate");
 }
 
 #pragma mark - UNUserNotificationCenterDelegate

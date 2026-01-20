@@ -182,6 +182,7 @@ extends Node
 var firebase_core
 var analytics
 var crashlytics
+var messaging
 
 func _ready():
     # Get all singletons
@@ -197,6 +198,9 @@ func _ready():
         crashlytics = Engine.get_singleton("GodotxFirebaseCrashlytics")
         crashlytics.crashlytics_initialized.connect(_on_crashlytics_initialized)
 
+    if Engine.has_singleton("GodotxFirebaseMessaging"):
+        messaging = Engine.get_singleton("GodotxFirebaseMessaging")
+
     # Initialize Core first
     if firebase_core:
         firebase_core.initialize()
@@ -210,6 +214,8 @@ func _on_core_initialized(success: bool):
             crashlytics.initialize()
         if analytics:
             analytics.initialize()
+        if messaging:
+            messaging.initialize()
     else:
         print("Firebase Core initialization failed")
 
@@ -277,6 +283,9 @@ messaging.messaging_apn_token_received.connect(_on_apn_token_received)  # iOS on
 messaging.messaging_message_received.connect(_on_message_received)
 messaging.messaging_error.connect(_on_error)
 
+# Initialize messaging (call after Firebase Core is initialized)
+messaging.initialize()
+
 # Request notification permission (this also registers for APNs on iOS)
 messaging.request_permission()
 
@@ -311,6 +320,7 @@ func _on_error(message: String):
 ```
 
 **Available Methods:**
+- `initialize()` - Initialize messaging (must be called after Firebase Core is initialized)
 - `request_permission()` - Request notification permission from user
 - `get_token()` - Get FCM registration token
 - `get_apns_token()` - Get APNs device token (iOS only, requires permission first)
