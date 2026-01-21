@@ -1,29 +1,5 @@
 #import "godotx_apn_delegate.h"
 #include "godotx_firebase_messaging.h"
-#import "drivers/apple_embedded/godot_app_delegate.h"
-
-@import Firebase;
-
-static NSString *APNSTokenToString(NSData *token) {
-    const unsigned char *data = (const unsigned char *)[token bytes];
-    NSMutableString *tokenString = [NSMutableString string];
-
-    for (NSUInteger i = 0; i < [token length]; i++) {
-        [tokenString appendFormat:@"%02.2hhX", data[i]];
-    }
-
-    return tokenString;
-}
-
-// Auto-register the delegate when the plugin loads
-struct APNDelegateInitializer {
-    APNDelegateInitializer() {
-        [GDTApplicationDelegate addService:[GodotxAPNDelegate shared]];
-        NSLog(@"[GodotxAPNDelegate] Registered with Godot application delegate");
-    }
-};
-
-static APNDelegateInitializer initializer;
 
 @implementation GodotxAPNDelegate
 
@@ -47,37 +23,6 @@ static APNDelegateInitializer initializer;
         sharedInstance = [[GodotxAPNDelegate alloc] init];
     });
     return sharedInstance;
-}
-
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    NSLog(@"[GodotxAPNDelegate] Received APN device token");
-
-    if (![FIRApp defaultApp]) {
-        NSLog(@"[GodotxAPNDelegate] Firebase not configured yet, skipping APNs token");
-        return;
-    }
-
-    [FIRMessaging messaging].APNSToken = deviceToken;
-
-    NSString *token = APNSTokenToString(deviceToken);
-    NSLog(@"[GodotxAPNDelegate] APN Token: %@", token);
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (GodotxFirebaseMessaging::instance) {
-            GodotxFirebaseMessaging::instance->emit_signal("messaging_apn_token_received", String([token UTF8String]));
-        }
-    });
-}
-
-- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-    NSLog(@"[GodotxAPNDelegate] Failed to register for remote notifications: %@", error.localizedDescription);
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (GodotxFirebaseMessaging::instance) {
-            String error_msg = String("Failed to register for APNs: ") + String([error.localizedDescription UTF8String]);
-            GodotxFirebaseMessaging::instance->emit_signal("messaging_error", error_msg);
-        }
-    });
 }
 
 #pragma mark - UNUserNotificationCenterDelegate
