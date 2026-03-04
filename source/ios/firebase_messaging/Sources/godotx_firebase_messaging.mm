@@ -128,7 +128,7 @@ void GodotxFirebaseMessaging::request_permission() {
                 NSLog(@"[GodotxFirebaseMessaging] Permission request error: %@", error.localizedDescription);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (GodotxFirebaseMessaging::instance) {
-                        GodotxFirebaseMessaging::instance->emit_signal("messaging_error", String([error.localizedDescription UTF8String]));
+                        GodotxFirebaseMessaging::instance->emit_signal("messaging_error", String::utf8([error.localizedDescription UTF8String]));
                     }
                 });
                 return;
@@ -186,7 +186,7 @@ void GodotxFirebaseMessaging::attempt_get_fcm_token() {
             NSLog(@"[GodotxFirebaseMessaging] Error fetching token: %@", error.localizedDescription);
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (GodotxFirebaseMessaging::instance) {
-                    GodotxFirebaseMessaging::instance->emit_signal("messaging_error", String([error.localizedDescription UTF8String]));
+                    GodotxFirebaseMessaging::instance->emit_signal("messaging_error", String::utf8([error.localizedDescription UTF8String]));
                 }
             });
             return;
@@ -250,7 +250,7 @@ void GodotxFirebaseMessaging::subscribe_to_topic(String topic) {
             NSLog(@"[GodotxFirebaseMessaging] Error subscribing to topic %@: %@", nsTopic, error.localizedDescription);
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (GodotxFirebaseMessaging::instance) {
-                    GodotxFirebaseMessaging::instance->emit_signal("messaging_error", String([error.localizedDescription UTF8String]));
+                    GodotxFirebaseMessaging::instance->emit_signal("messaging_error", String::utf8([error.localizedDescription UTF8String]));
                 }
             });
         } else {
@@ -270,7 +270,7 @@ void GodotxFirebaseMessaging::unsubscribe_from_topic(String topic) {
             NSLog(@"[GodotxFirebaseMessaging] Error unsubscribing from topic %@: %@", nsTopic, error.localizedDescription);
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (GodotxFirebaseMessaging::instance) {
-                    GodotxFirebaseMessaging::instance->emit_signal("messaging_error", String([error.localizedDescription UTF8String]));
+                    GodotxFirebaseMessaging::instance->emit_signal("messaging_error", String::utf8([error.localizedDescription UTF8String]));
                 }
             });
         } else {

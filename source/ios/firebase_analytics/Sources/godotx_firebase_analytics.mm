@@ -62,7 +62,7 @@ void GodotxFirebaseAnalytics::log_event(String event_name, Dictionary params) {
     }
     @catch (NSException *exception) {
         NSLog(@"[GodotxFirebaseAnalytics] Failed to log event: %@", exception.reason);
-        emit_signal("analytics_error", String([exception.reason UTF8String]));
+        emit_signal("analytics_error", String::utf8([exception.reason UTF8String]));
     }
 }
 

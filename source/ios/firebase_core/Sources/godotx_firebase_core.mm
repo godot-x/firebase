@@ -40,7 +40,7 @@ void GodotxFirebaseCore::initialize() {
     @catch (NSException *exception) {
         NSLog(@"[GodotxFirebaseCore] Firebase initialization failed: %@", exception.reason);
         emit_signal("core_initialized", false);
-        emit_signal("core_error", String([exception.reason UTF8String]));
+        emit_signal("core_error", String::utf8([exception.reason UTF8String]));
     }
 }
 

@@ -39,7 +39,7 @@ void GodotxFirebaseCrashlytics::log_message(String message) {
     }
     @catch (NSException *exception) {
         NSLog(@"[GodotxFirebaseCrashlytics] Failed to log message: %@", exception.reason);
-        emit_signal("crashlytics_error", String([exception.reason UTF8String]));
+        emit_signal("crashlytics_error", String::utf8([exception.reason UTF8String]));
     }
 }
 
@@ -51,7 +51,7 @@ void GodotxFirebaseCrashlytics::set_user_id(String user_id) {
     }
     @catch (NSException *exception) {
         NSLog(@"[GodotxFirebaseCrashlytics] Failed to set user ID: %@", exception.reason);
-        emit_signal("crashlytics_error", String([exception.reason UTF8String]));
+        emit_signal("crashlytics_error", String::utf8([exception.reason UTF8String]));
     }
 }
 
@@ -81,7 +81,7 @@ void GodotxFirebaseCrashlytics::set_custom_value(String key, Variant value) {
     }
     @catch (NSException *exception) {
         NSLog(@"[GodotxFirebaseCrashlytics] Failed to set custom value: %@", exception.reason);
-        emit_signal("crashlytics_error", String([exception.reason UTF8String]));
+        emit_signal("crashlytics_error", String::utf8([exception.reason UTF8String]));
     }
 }
 

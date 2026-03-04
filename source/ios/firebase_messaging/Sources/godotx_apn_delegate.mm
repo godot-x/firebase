@@ -40,8 +40,8 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if (GodotxFirebaseMessaging::instance) {
             GodotxFirebaseMessaging::instance->emit_signal("messaging_message_received",
-                String([title UTF8String]),
-                String([body UTF8String]));
+                String::utf8([title UTF8String]),
+                String::utf8([body UTF8String]));
         }
     });
 
@@ -65,8 +65,8 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     dispatch_async(dispatch_get_main_queue(), ^{
         if (GodotxFirebaseMessaging::instance) {
             GodotxFirebaseMessaging::instance->emit_signal("messaging_message_received",
-                String([title UTF8String]),
-                String([body UTF8String]));
+                String::utf8([title UTF8String]),
+                String::utf8([body UTF8String]));
         }
     });
 

@@ -40,7 +40,7 @@
         if (GodotxFirebaseMessaging::instance) {
             GodotxFirebaseMessaging::instance->emit_signal(
                 "messaging_error",
-                String([error.localizedDescription UTF8String])
+                String::utf8([error.localizedDescription UTF8String])
             );
         }
     });
