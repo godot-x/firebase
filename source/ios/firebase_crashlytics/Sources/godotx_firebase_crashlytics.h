@@ -2,7 +2,6 @@
 #define GODOTX_FIREBASE_CRASHLYTICS_H
 
 #include "core/object/class_db.h"
-#include "core/variant/variant.h"
 
 class GodotxFirebaseCrashlytics : public Object {
     GDCLASS(GodotxFirebaseCrashlytics, Object);
@@ -20,7 +19,10 @@ public:
     void crash();
     void log_message(String message);
     void set_user_id(String user_id);
-    void set_custom_value(String key, Variant value);
+    void set_custom_value_string(String key, String value);
+    void set_custom_value_int(String key, int64_t value);
+    void set_custom_value_bool(String key, bool value);
+    void set_custom_value_float(String key, double value);
 
     GodotxFirebaseCrashlytics();
     ~GodotxFirebaseCrashlytics();
