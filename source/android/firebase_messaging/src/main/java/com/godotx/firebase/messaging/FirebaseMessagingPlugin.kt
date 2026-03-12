@@ -1,12 +1,14 @@
 package com.godotx.firebase.messaging
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.SignalInfo
@@ -17,14 +19,62 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
     companion object {
         val TAG = FirebaseMessagingPlugin::class.java.simpleName
         const val PERMISSION_REQUEST_CODE = 1001
+        private var _instance: java.lang.ref.WeakReference<FirebaseMessagingPlugin>? = null
+        val instance: FirebaseMessagingPlugin? get() = _instance?.get()
     }
 
     init {
+        _instance = java.lang.ref.WeakReference(this)
         Log.v(TAG, "Firebase Messaging plugin loaded")
     }
 
+    private val handledMessageIds = mutableSetOf<String>()
+    private var coldStartIntent: Intent? = null
+    private var isInitialized = false
+
     override fun getPluginName(): String {
         return "GodotxFirebaseMessaging"
+    }
+
+    // Note: When the app is in the background, FCM displays the notification in the system tray
+    // and does NOT deliver the notification payload to onMessageReceived. In that case,
+    // remoteMessage.notification will be null and title/body will be empty strings.
+    // See: https://firebase.google.com/docs/cloud-messaging/android/receive-messages
+    fun notifyMessageReceived(remoteMessage: RemoteMessage) {
+        val title = remoteMessage.notification?.title ?: ""
+        val body = remoteMessage.notification?.body ?: ""
+        emitSignal("messaging_message_received", title, body)
+    }
+
+    private fun handleIntentMessage(intent: Intent) {
+        val extras = intent.extras ?: return
+        val remoteMessage = RemoteMessage(extras)
+
+        // Validate it's actually a FCM message (same check as Firebase C++ SDK)
+        // see. https://github.com/firebase/firebase-cpp-sdk/blob/main/messaging/src/android/java/com/google/firebase/messaging/MessageForwardingService.java
+        if (remoteMessage.from == null || remoteMessage.messageId == null) {
+            Log.d(TAG, "Message is not a FCM message")
+            return
+        }
+
+        if (!handledMessageIds.add(remoteMessage.messageId!!)) {
+            // Already emitted for this message ID
+            Log.d(TAG, "Message ID ${remoteMessage.messageId} already handled")
+            return
+        }
+
+        notifyMessageReceived(remoteMessage)
+    }
+
+    // Called when app resumes from background
+    // If initialize() has not been called yet, defer processing until it is.
+    override fun onMainResume() {
+        val intent = activity?.intent ?: return
+        if (!isInitialized) {
+            coldStartIntent = intent
+            return
+        }
+        handleIntentMessage(intent)
     }
 
     override fun getPluginSignals(): Set<SignalInfo> {
@@ -80,6 +130,12 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
             }
 
             Log.d(TAG, "Firebase Messaging initialized (${apps.size} Firebase app(s) found)")
+
+            isInitialized = true
+
+            // Emit any notification that was received before initialization (cold start or early resume)
+            coldStartIntent?.let { handleIntentMessage(it) }
+            coldStartIntent = null
         } catch (e: Exception) {
             Log.e(TAG, "Firebase initialization check failed", e)
             emitSignal("messaging_error", e.message ?: "firebase_check_failed")

@@ -24,6 +24,7 @@ class GodotxFirebaseMessagingService : FirebaseMessagingService() {
         if (remoteMessage.data.isNotEmpty()) {
             Log.d(TAG, "Message data payload: ${remoteMessage.data}")
         }
+        FirebaseMessagingPlugin.instance?.notifyMessageReceived(remoteMessage)
     }
 
     override fun onNewToken(token: String) {
