@@ -146,6 +146,7 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
             coldStartIntent?.let { handleIntentMessage(it) }
             coldStartIntent = null
             deferredToken?.let { notifyNewToken(it) }
+            deferredToken = null
         } catch (e: Exception) {
             Log.e(TAG, "Firebase initialization check failed", e)
             emitSignal("messaging_error", e.message ?: "firebase_check_failed")
