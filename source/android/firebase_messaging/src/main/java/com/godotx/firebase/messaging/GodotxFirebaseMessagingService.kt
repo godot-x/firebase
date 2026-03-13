@@ -30,6 +30,7 @@ class GodotxFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d(TAG, "New FCM token: $token")
+        FirebaseMessagingPlugin.instance?.notifyNewToken(token)
     }
 }
 
