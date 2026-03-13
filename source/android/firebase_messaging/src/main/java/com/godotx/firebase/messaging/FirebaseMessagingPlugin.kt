@@ -30,6 +30,7 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
 
     private val handledMessageIds = mutableSetOf<String>()
     private var coldStartIntent: Intent? = null
+    private var deferredToken: String? = null
     private var isInitialized = false
 
     override fun getPluginName(): String {
@@ -44,6 +45,14 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
         val title = remoteMessage.notification?.title ?: ""
         val body = remoteMessage.notification?.body ?: ""
         emitSignal("messaging_message_received", title, body)
+    }
+
+    fun notifyNewToken(token: String) {
+        if (!isInitialized) {
+            deferredToken = token
+            return
+        }
+        emitSignal("messaging_token_received", token)
     }
 
     private fun handleIntentMessage(intent: Intent) {
@@ -136,6 +145,8 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
             // Emit any notification that was received before initialization (cold start or early resume)
             coldStartIntent?.let { handleIntentMessage(it) }
             coldStartIntent = null
+            deferredToken?.let { notifyNewToken(it) }
+            deferredToken = null
         } catch (e: Exception) {
             Log.e(TAG, "Firebase initialization check failed", e)
             emitSignal("messaging_error", e.message ?: "firebase_check_failed")
