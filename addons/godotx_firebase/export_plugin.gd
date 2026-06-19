@@ -132,7 +132,7 @@ class AndroidExportPlugin extends EditorExportPlugin:
 				"name": "firebase/analytics_version",
 				"type": TYPE_STRING
 			},
-			"default_value": "23.0.0"
+			"default_value": "23.2.0"
 		})
 
 		# Enable Crashlytics
@@ -150,7 +150,7 @@ class AndroidExportPlugin extends EditorExportPlugin:
 				"name": "firebase/crashlytics_version",
 				"type": TYPE_STRING
 			},
-			"default_value": "20.0.3"
+			"default_value": "20.0.6"
 		})
 
 		# Enable Messaging
@@ -168,7 +168,7 @@ class AndroidExportPlugin extends EditorExportPlugin:
 				"name": "firebase/messaging_version",
 				"type": TYPE_STRING
 			},
-			"default_value": "25.0.1"
+			"default_value": "25.0.2"
 		})
 
 		return options

@@ -39,17 +39,17 @@ This project provides native Firebase plugins for Godot, built as separate modul
 
 | Component | Version |
 |-----------|---------|
-| Godot | 4.6-stable |
+| Godot | 4.7-stable |
 | **iOS** | |
-| Firebase iOS SDK | 12.7.0 |
+| Firebase iOS SDK | 12.14.0 |
 | Min iOS | 13.0 |
 | **Android** | |
-| firebase-analytics | 23.0.0 |
-| firebase-crashlytics | 20.0.3 |
-| firebase-crashlytics-ndk | 20.0.3 |
-| firebase-messaging | 25.0.1 |
+| firebase-analytics | 23.2.0 |
+| firebase-crashlytics | 20.0.6 |
+| firebase-crashlytics-ndk | 20.0.6 |
+| firebase-messaging | 25.0.2 |
 | firebase-common | 22.0.1 |
-| Kotlin | 2.3.0 |
+| Kotlin | 2.4.0 |
 | Min Android SDK | 24 (Android 7.0) |
 
 ## Quick Start
@@ -691,7 +691,7 @@ A: Yes, Firebase adds approximately:
 Only enabled modules are included in the final build.
 
 **Q: Does this work with Godot 4.4 or earlier?**
-A: This project is built for Godot 4.6 or later.
+A: This project is built for Godot 4.7 or later.
 
 **Q: How do I get Firebase config files?**
 A:

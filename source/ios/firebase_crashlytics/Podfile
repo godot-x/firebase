@@ -2,7 +2,7 @@ platform :ios, '15.0'
 use_frameworks!
 
 target 'GodotxFirebaseCrashlytics' do
-  pod 'Firebase/Crashlytics', '12.7.0'
+  pod 'Firebase/Crashlytics', '12.14.0'
 end
 
 post_install do |installer|
