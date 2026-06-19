@@ -1,6 +1,6 @@
 plugins {
     id("com.android.library") version "8.13.2"
-    id("org.jetbrains.kotlin.android") version "2.3.0"
+    id("org.jetbrains.kotlin.android") version "2.4.0"
 }
 
 android {
@@ -31,9 +31,9 @@ android {
 }
 
 dependencies {
-    compileOnly("org.godotengine:godot:4.6.0.stable")
+    compileOnly("org.godotengine:godot:4.7.0.stable")
 
     // Firebase Messaging
-    implementation("com.google.firebase:firebase-messaging:25.0.1")
+    implementation("com.google.firebase:firebase-messaging:25.0.2")
 }
 
