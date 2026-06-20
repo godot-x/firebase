@@ -1,0 +1,68 @@
+[gd_scene load_steps=2 format=3 uid="uid://e4t5n8m7p2r3y"]
+
+[ext_resource type="Script" path="res://scripts/TestButton.gd" id="1"]
+
+[node name="CrashlyticsView" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Crashlytics Module"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="List" type="VBoxContainer" parent="ScrollContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="FatalButton" type="Button" parent="ScrollContainer/MarginContainer/List"]
+modulate = Color(1, 0.4, 0.4, 1)
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "💀 Force Fatal Crash"
+script = ExtResource("1")
+
+[node name="NonFatalButton" type="Button" parent="ScrollContainer/MarginContainer/List"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "⚠️ Log Non-Fatal Error"
+script = ExtResource("1")
+
+[node name="LogMsgButton" type="Button" parent="ScrollContainer/MarginContainer/List"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "📝 Log Message"
+script = ExtResource("1")
+
+[node name="SetUserIdButton" type="Button" parent="ScrollContainer/MarginContainer/List"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "👤 Set User ID"
+script = ExtResource("1")
+
+[node name="CustomValueButton" type="Button" parent="ScrollContainer/MarginContainer/List"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🔑 Set Custom Value"
+script = ExtResource("1")

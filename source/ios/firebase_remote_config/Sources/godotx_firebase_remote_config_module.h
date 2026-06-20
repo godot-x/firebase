@@ -1,0 +1,7 @@
+#ifndef GODOTX_FIREBASE_REMOTE_CONFIG_MODULE_H
+#define GODOTX_FIREBASE_REMOTE_CONFIG_MODULE_H
+
+void initialize_godotx_firebase_remote_config_module();
+void uninitialize_godotx_firebase_remote_config_module();
+
+#endif // GODOTX_FIREBASE_REMOTE_CONFIG_MODULE_H

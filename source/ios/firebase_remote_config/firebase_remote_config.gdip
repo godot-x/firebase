@@ -1,0 +1,21 @@
+[config]
+
+name="GodotxFirebaseRemoteConfig"
+binary="GodotxFirebaseRemoteConfig.xcframework"
+
+initialization="initialize_godotx_firebase_remote_config_module"
+deinitialization="uninitialize_godotx_firebase_remote_config_module"
+
+[dependencies]
+
+linked=[]
+
+embedded=["FirebaseABTesting.xcframework", "FirebaseRemoteConfig.xcframework", "FirebaseRemoteConfigInterop.xcframework", "FirebaseSharedSwift.xcframework"]
+
+system=["UIKit.framework", "Foundation.framework"]
+
+capabilities=[]
+
+files=[]
+
+linker_flags=["-ObjC", "-L$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$(PLATFORM_NAME)"]

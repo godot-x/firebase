@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
+import org.godotengine.godot.Dictionary
 import org.godotengine.godot.Godot
 import org.godotengine.godot.plugin.GodotPlugin
 import org.godotengine.godot.plugin.SignalInfo
@@ -32,6 +33,7 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
     private var coldStartIntent: Intent? = null
     private var deferredToken: String? = null
     private var isInitialized = false
+    private var lastNotification: Dictionary? = null
 
     override fun getPluginName(): String {
         return "GodotxFirebaseMessaging"
@@ -44,7 +46,19 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
     fun notifyMessageReceived(remoteMessage: RemoteMessage) {
         val title = remoteMessage.notification?.title ?: ""
         val body = remoteMessage.notification?.body ?: ""
-        emitSignal("messaging_message_received", title, body)
+
+        val dataDict = Dictionary()
+        for ((key, value) in remoteMessage.data) {
+            dataDict[key] = value
+        }
+
+        val cached = Dictionary()
+        cached["title"] = title
+        cached["body"] = body
+        cached["data"] = dataDict
+        lastNotification = cached
+
+        emitSignal("messaging_message_received", title, body, dataDict)
     }
 
     fun notifyNewToken(token: String) {
@@ -88,6 +102,9 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
 
     override fun getPluginSignals(): Set<SignalInfo> {
         return setOf(
+            SignalInfo("messaging_initialized",
+                Boolean::class.javaObjectType
+            ),
             SignalInfo("messaging_permission_granted"),
             SignalInfo("messaging_permission_denied"),
             SignalInfo("messaging_token_received",
@@ -95,9 +112,19 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
             ),
             SignalInfo("messaging_message_received",
                 String::class.java,
+                String::class.java,
+                Dictionary::class.java
+            ),
+            SignalInfo("messaging_topic_subscribed",
+                String::class.java
+            ),
+            SignalInfo("messaging_topic_unsubscribed",
                 String::class.java
             ),
             SignalInfo("messaging_error",
+                String::class.java
+            ),
+            SignalInfo("messaging_apn_token_received",
                 String::class.java
             )
         )
@@ -125,6 +152,7 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
 
         if (ctx == null) {
             Log.e(TAG, "initialize: activity is null")
+            emitSignal("messaging_initialized", false)
             emitSignal("messaging_error", "activity_null")
             return
         }
@@ -134,6 +162,7 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
 
             if (apps.isEmpty()) {
                 Log.e(TAG, "Firebase is NOT initialized")
+                emitSignal("messaging_initialized", false)
                 emitSignal("messaging_error", "firebase_not_initialized")
                 return
             }
@@ -141,6 +170,7 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
             Log.d(TAG, "Firebase Messaging initialized (${apps.size} Firebase app(s) found)")
 
             isInitialized = true
+            emitSignal("messaging_initialized", true)
 
             // Emit any notification that was received before initialization (cold start or early resume)
             coldStartIntent?.let { handleIntentMessage(it) }
@@ -149,6 +179,7 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
             deferredToken = null
         } catch (e: Exception) {
             Log.e(TAG, "Firebase initialization check failed", e)
+            emitSignal("messaging_initialized", false)
             emitSignal("messaging_error", e.message ?: "firebase_check_failed")
         }
     }
@@ -203,17 +234,19 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
     }
 
     @UsedByGodot
+    fun get_apns_token() {
+        Log.d(TAG, "get_apns_token called on Android - ignoring (iOS only)")
+        emitSignal("messaging_apn_token_received", "")
+    }
+
+    @UsedByGodot
     fun subscribe_to_topic(topic: String) {
         try {
             FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d(TAG, "Subscribed to topic: $topic")
-                    } else {
-                        Log.e(TAG, "Failed to subscribe to topic", task.exception)
-                        emitSignal("messaging_error", task.exception?.message ?: "subscribe_failed")
-                    }
-                }
+                .addOnSuccessListener { Log.d(TAG, "Subscribed to topic (server confirmed): $topic") }
+                .addOnFailureListener { e -> Log.e(TAG, "Subscribe server sync failed for $topic", e) }
+            Log.d(TAG, "Subscribe to topic queued: $topic")
+            emitSignal("messaging_topic_subscribed", topic)
         } catch (e: Exception) {
             Log.e(TAG, "Error subscribing to topic", e)
             emitSignal("messaging_error", e.message ?: "subscribe_error")
@@ -224,18 +257,19 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
     fun unsubscribe_from_topic(topic: String) {
         try {
             FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d(TAG, "Unsubscribed from topic: $topic")
-                    } else {
-                        Log.e(TAG, "Failed to unsubscribe from topic", task.exception)
-                        emitSignal("messaging_error", task.exception?.message ?: "unsubscribe_failed")
-                    }
-                }
+                .addOnSuccessListener { Log.d(TAG, "Unsubscribed from topic (server confirmed): $topic") }
+                .addOnFailureListener { e -> Log.e(TAG, "Unsubscribe server sync failed for $topic", e) }
+            Log.d(TAG, "Unsubscribe from topic queued: $topic")
+            emitSignal("messaging_topic_unsubscribed", topic)
         } catch (e: Exception) {
             Log.e(TAG, "Error unsubscribing from topic", e)
             emitSignal("messaging_error", e.message ?: "unsubscribe_error")
         }
+    }
+
+    @UsedByGodot
+    fun get_last_notification(): Dictionary {
+        return lastNotification ?: Dictionary()
     }
 }
 

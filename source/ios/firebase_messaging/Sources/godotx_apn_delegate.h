@@ -6,6 +6,8 @@
 
 @interface GodotxAPNDelegate : NSObject <UNUserNotificationCenterDelegate>
 
+@property (nonatomic, strong) NSDictionary *lastNotificationInfo;
+
 + (instancetype)shared;
 - (void)activateNotificationCenterDelegate;
 

@@ -3,6 +3,11 @@
 
 #include "core/object/class_db.h"
 
+#ifdef __OBJC__
+@class GodotxAPNDelegate;
+#endif
+
+
 class GodotxFirebaseMessaging : public Object {
     GDCLASS(GodotxFirebaseMessaging, Object);
     
@@ -20,6 +25,11 @@ public:
     void attempt_get_fcm_token();
     void subscribe_to_topic(String topic);
     void unsubscribe_from_topic(String topic);
+    Dictionary get_last_notification();
+    
+
+
+
 
     GodotxFirebaseMessaging();
     ~GodotxFirebaseMessaging();

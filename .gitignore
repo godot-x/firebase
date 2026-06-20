@@ -36,3 +36,5 @@ Thumbs.db
 # Temp files
 temp/
 /*.zip
+*.uid
+rc.json

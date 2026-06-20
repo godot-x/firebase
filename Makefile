@@ -25,10 +25,10 @@ TMP_DIR = /tmp
 # ============================================================================
 # Module Configuration
 # ============================================================================
-APPLE_MODULES = firebase_core firebase_analytics firebase_crashlytics firebase_messaging
-APPLE_MODULE_NAMES = Core Analytics Crashlytics Messaging
+APPLE_MODULES = firebase_core firebase_analytics firebase_crashlytics firebase_messaging firebase_remote_config
+APPLE_MODULE_NAMES = Core Analytics Crashlytics Messaging RemoteConfig
 
-ANDROID_MODULES = firebase_core firebase_analytics firebase_crashlytics firebase_messaging
+ANDROID_MODULES = firebase_core firebase_analytics firebase_crashlytics firebase_messaging firebase_remote_config
 
 # ============================================================================
 # Build Configuration
@@ -242,17 +242,24 @@ build-apple: setup-apple
 		case $$module in \
 			firebase_core) \
 				echo "    - Copying frameworks from FirebaseAnalytics..." && \
-				cp -a $(FIREBASE_SDK_DIR)/FirebaseAnalytics/*.xcframework $(IOS_PLUGINS_DIR)/$$module/ ;; \
+				cp -a $(FIREBASE_SDK_DIR)/FirebaseAnalytics/*.xcframework $(IOS_PLUGINS_DIR)/$$module/ && \
+				echo "    - Copying GoogleDataTransport from FirebaseMessaging..." && \
+				cp -a $(FIREBASE_SDK_DIR)/FirebaseMessaging/GoogleDataTransport.xcframework $(IOS_PLUGINS_DIR)/$$module/ ;; \
 			firebase_analytics) \
 				echo "    - Copying frameworks from FirebaseAnalytics..." && \
 				cp -a $(FIREBASE_SDK_DIR)/FirebaseAnalytics/*.xcframework $(IOS_PLUGINS_DIR)/$$module/ ;; \
 			firebase_crashlytics) \
 				echo "    - Copying frameworks from FirebaseCrashlytics..." && \
-				cp -a $(FIREBASE_SDK_DIR)/FirebaseCrashlytics/*.xcframework $(IOS_PLUGINS_DIR)/$$module/ ;; \
+				cp -a $(FIREBASE_SDK_DIR)/FirebaseCrashlytics/*.xcframework $(IOS_PLUGINS_DIR)/$$module/ && \
+				rm -rf $(IOS_PLUGINS_DIR)/$$module/GoogleDataTransport.xcframework ;; \
 			firebase_messaging) \
-				echo "    - Copying frameworks from FirebaseMessaging..." && \
-				cp -a $(FIREBASE_SDK_DIR)/FirebaseMessaging/*.xcframework $(IOS_PLUGINS_DIR)/$$module/ ;; \
-		esac); \
+				echo "    - Copying frameworks from FirebaseMessaging..." \
+				&& cp -a $(FIREBASE_SDK_DIR)/FirebaseMessaging/*.xcframework $(IOS_PLUGINS_DIR)/$$module/ \
+				&& rm -rf $(IOS_PLUGINS_DIR)/$$module/GoogleDataTransport.xcframework ;; \
+			firebase_remote_config) \
+				echo "    - Copying frameworks from FirebaseRemoteConfig..." \
+				&& cp -a $(FIREBASE_SDK_DIR)/FirebaseRemoteConfig/*.xcframework $(IOS_PLUGINS_DIR)/$$module/ ;; \
+		esac) || exit 1; \
 		echo "  ✓ $$module build complete (Debug + Release)"; \
 		echo ""; \
 	done

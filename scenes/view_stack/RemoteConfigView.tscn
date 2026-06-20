@@ -1,0 +1,113 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1rcviewstack"]
+
+[ext_resource type="Script" path="res://scripts/TestButton.gd" id="1"]
+
+[node name="RemoteConfigView" type="ScrollContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="List" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="List"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Remote Config Module"
+horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="List"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="ButtonList" type="VBoxContainer" parent="List/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="FetchButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🔄 Fetch & Activate"
+script = ExtResource("1")
+
+[node name="HSeparator" type="HSeparator" parent="List/MarginContainer/ButtonList"]
+layout_mode = 2
+
+[node name="GetStringButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "📄 Get String (welcome_message)"
+script = ExtResource("1")
+
+[node name="GetIntButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🔢 Get Int (min_version)"
+script = ExtResource("1")
+
+[node name="GetFloatButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🧪 Get Float (drop_rate)"
+script = ExtResource("1")
+
+[node name="GetDoubleButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🔬 Get Double (drop_rate_v2)"
+script = ExtResource("1")
+
+[node name="GetBoolButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🔘 Get Bool (feature_enabled)"
+script = ExtResource("1")
+
+[node name="GetDictButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "📁 Get Dictionary (game_config)"
+script = ExtResource("1")
+
+[node name="HSeparator2" type="HSeparator" parent="List/MarginContainer/ButtonList"]
+layout_mode = 2
+
+[node name="SetDefaultsButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🛠️ Set Local Defaults"
+script = ExtResource("1")
+
+[node name="SetIntervalButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "⚡ Dev Mode (0s Interval)"
+script = ExtResource("1")
+
+[node name="ListenerButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "📡 Real-time Updates: OFF"
+script = ExtResource("1")
+
+[node name="RemoveListenerButton" type="Button" parent="List/MarginContainer/ButtonList"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🔕 Remove Listener"
+script = ExtResource("1")

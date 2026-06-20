@@ -10,7 +10,7 @@ deinitialization="uninitialize_godotx_firebase_crashlytics_module"
 
 linked=[]
 
-embedded=["FirebaseCoreExtension.xcframework", "FirebaseCrashlytics.xcframework", "FirebaseRemoteConfigInterop.xcframework", "FirebaseSessions.xcframework", "GoogleDataTransport.xcframework", "Promises.xcframework"]
+embedded=["FirebaseCoreExtension.xcframework", "FirebaseCrashlytics.xcframework", "FirebaseRemoteConfigInterop.xcframework", "FirebaseSessions.xcframework", "Promises.xcframework"]
 
 system=["UserNotifications.framework", "UIKit.framework", "Foundation.framework"]
 

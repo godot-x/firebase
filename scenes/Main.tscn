@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bk7bnp6eunbxp"]
+[gd_scene load_steps=3 format=3 uid="uid://bk7bnp6eunbxp"]
 
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/TestButton.gd" id="2"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -16,179 +17,171 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = 140.0
-offset_right = -40.0
-offset_bottom = -60.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 0
 
-[node name="Title" type="Label" parent="VBoxContainer"]
+[node name="HeaderGroup" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-theme_override_font_sizes/font_size = 48
-text = "Firebase Plugin Test"
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HeaderGroup"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HeaderGroup/MarginContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="VBoxContainer/HeaderGroup/MarginContainer/HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(80, 60)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 32
+text = "<"
+
+[node name="ViewTitle" type="Label" parent="VBoxContainer/HeaderGroup/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 42
+text = "Firebase Harness"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="StatusLabel" type="Label" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 60)
+[node name="ContextGroup" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 20
+
+[node name="Dashboard" type="ScrollContainer" parent="VBoxContainer/ContextGroup"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContextGroup/Dashboard"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+
+[node name="List" type="VBoxContainer" parent="VBoxContainer/ContextGroup/Dashboard/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="InitializeButton" type="Button" parent="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "🔥 INITIALIZE FIREBASE"
+script = ExtResource("2")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="AnalyticsButton" type="Button" parent="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List"]
+disabled = true
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Ready"
-horizontal_alignment = 1
-autowrap_mode = 3
-vertical_alignment = 1
+text = "ANALYTICS"
+script = ExtResource("2")
 
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+[node name="CrashlyticsButton" type="Button" parent="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List"]
+disabled = true
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "CRASHLYTICS"
+script = ExtResource("2")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="MessagingButton" type="Button" parent="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List"]
+disabled = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "MESSAGING"
+script = ExtResource("2")
+
+[node name="RemoteConfigButton" type="Button" parent="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List"]
+disabled = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "REMOTE CONFIG"
+script = ExtResource("2")
+
+
+
+[node name="ModuleContainer" type="Control" parent="VBoxContainer/ContextGroup"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ContentContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer"]
+[node name="LogGroup" type="VBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 400)
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/LogGroup"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/LogGroup"]
+layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 15
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
 
-[node name="CoreLabel" type="Label" parent="VBoxContainer/ScrollContainer/ContentContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/LogGroup/MarginContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 34
-text = "🔥 Firebase Core"
+theme_override_constants/separation = 10
 
-[node name="InitializeButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
+[node name="LogTitle" type="Label" parent="VBoxContainer/LogGroup/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Initialize Firebase"
-
-[node name="HSeparator" type="HSeparator" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-layout_mode = 2
-
-[node name="AnalyticsLabel" type="Label" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 34
-text = "📊 Firebase Analytics"
-
-[node name="LogEventButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Log Test Event"
-
-[node name="LogScreenButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Log Screen View"
-
-[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-layout_mode = 2
-
-[node name="CrashlyticsLabel" type="Label" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 34
-text = "🐛 Firebase Crashlytics"
-
-[node name="LogCrashlyticsButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Log Message"
-
-[node name="SetUserIDButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Set User ID"
-
-[node name="SetCustomValueButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Set Custom Value"
-
-[node name="ForceCrashButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
-theme_override_font_sizes/font_size = 26
-text = "⚠ Force Crash (Test)"
-
-[node name="HSeparator3" type="HSeparator" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-layout_mode = 2
-
-[node name="MessagingLabel" type="Label" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 34
-text = "💬 Firebase Messaging"
-
-[node name="RequestPermissionButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Request Notification Permission"
-
-[node name="GetTokenButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Get FCM Token"
-
-[node name="SubscribeTopicButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Subscribe to 'test_topic'"
-
-[node name="UnsubscribeTopicButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
-layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Unsubscribe from 'test_topic'"
-
-[node name="HSeparator4" type="HSeparator" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-layout_mode = 2
-
-[node name="LogLabel" type="Label" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 34
+theme_override_font_sizes/font_size = 28
 text = "📝 Output Log"
 
-[node name="LogOutput" type="TextEdit" parent="VBoxContainer/ScrollContainer/ContentContainer"]
+[node name="LogOutput" type="TextEdit" parent="VBoxContainer/LogGroup/MarginContainer/VBoxContainer"]
 layout_mode = 2
-custom_minimum_size = Vector2(0, 450)
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 24
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 22
 editable = false
 wrap_mode = 1
 
-[node name="ClearLogButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
+[node name="LogControls" type="HBoxContainer" parent="VBoxContainer/LogGroup/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Clear Log"
+theme_override_constants/separation = 40
 
-[node name="CopyLogButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
-custom_minimum_size = Vector2(0, 70)
+[node name="ClearLogButton" type="Button" parent="VBoxContainer/LogGroup/MarginContainer/VBoxContainer/LogControls"]
+custom_minimum_size = Vector2(200, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
-text = "Copy Log"
+theme_override_font_sizes/font_size = 24
+text = "Clear Logs"
 
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/InitializeButton" to="." method="_on_initialize_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/LogEventButton" to="." method="_on_log_event_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/LogScreenButton" to="." method="_on_log_screen_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/LogCrashlyticsButton" to="." method="_on_log_crashlytics_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/SetUserIDButton" to="." method="_on_set_user_id_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/SetCustomValueButton" to="." method="_on_set_custom_value_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/ForceCrashButton" to="." method="_on_force_crash_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/RequestPermissionButton" to="." method="_on_request_permission_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/GetTokenButton" to="." method="_on_get_token_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/SubscribeTopicButton" to="." method="_on_subscribe_topic_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/UnsubscribeTopicButton" to="." method="_on_unsubscribe_topic_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/ClearLogButton" to="." method="_on_clear_log_pressed"]
-[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/CopyLogButton" to="." method="_on_copy_log_pressed"]
+[node name="Control" type="Control" parent="VBoxContainer/LogGroup/MarginContainer/VBoxContainer/LogControls"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CopyLogButton" type="Button" parent="VBoxContainer/LogGroup/MarginContainer/VBoxContainer/LogControls"]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Copy Logs"
+
+[connection signal="pressed" from="VBoxContainer/HeaderGroup/MarginContainer/HBoxContainer/BackButton" to="." method="show_dashboard"]
+[connection signal="pressed" from="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List/InitializeButton" to="." method="_on_initialize_pressed"]
+[connection signal="pressed" from="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List/AnalyticsButton" to="." method="show_module" binds= ["Analytics"]]
+[connection signal="pressed" from="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List/CrashlyticsButton" to="." method="show_module" binds= ["Crashlytics"]]
+[connection signal="pressed" from="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List/MessagingButton" to="." method="show_module" binds= ["Messaging"]]
+[connection signal="pressed" from="VBoxContainer/ContextGroup/Dashboard/MarginContainer/List/RemoteConfigButton" to="." method="show_module" binds= ["Remote Config"]]
+
+[connection signal="pressed" from="VBoxContainer/LogGroup/MarginContainer/VBoxContainer/LogControls/ClearLogButton" to="." method="_on_clear_log_pressed"]
+[connection signal="pressed" from="VBoxContainer/LogGroup/MarginContainer/VBoxContainer/LogControls/CopyLogButton" to="." method="_on_copy_log_pressed"]

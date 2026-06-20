@@ -10,7 +10,7 @@ deinitialization="uninitialize_godotx_firebase_messaging_module"
 
 linked=[]
 
-embedded=["FirebaseMessaging.xcframework", "GoogleDataTransport.xcframework"]
+embedded=["FirebaseMessaging.xcframework"]
 
 system=["UserNotifications.framework", "UIKit.framework", "Foundation.framework"]
 

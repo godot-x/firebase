@@ -1,0 +1,77 @@
+name: GodotxFirebaseRemoteConfig
+options:
+  minimumXcodeGenVersion: 2.34.0
+targets:
+  GodotxFirebaseRemoteConfig:
+    type: library.static
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Sources
+        headerVisibility: public
+    settings:
+      base:
+        PRODUCT_NAME: GodotxFirebaseRemoteConfig
+        PRODUCT_MODULE_NAME: GodotxFirebaseRemoteConfig
+        CLANG_ENABLE_MODULES: YES
+        CLANG_CXX_LANGUAGE_STANDARD: "gnu++17"
+        CLANG_CXX_LIBRARY: "libc++"
+        GCC_SYMBOLS_PRIVATE_EXTERN: NO
+        SKIP_INSTALL: NO
+        OTHER_CFLAGS:
+          - "-fcxx-modules"
+          - "-fmodules"
+          - "$(inherited)"
+        OTHER_CPLUSPLUSFLAGS:
+          - "-fcxx-modules"
+          - "-fmodules"
+          - "$(inherited)"
+        OTHER_LDFLAGS:
+          - "-ObjC"
+          - "$(inherited)"
+        HEADER_SEARCH_PATHS:
+          - "$(inherited)"
+          - "$(PODS_ROOT)/**"
+          - "$(SRCROOT)/../../../../godot"
+          - "$(SRCROOT)/../../../../godot/platform/ios"
+        LIBRARY_SEARCH_PATHS:
+          - "$(inherited)"
+          - "$(SDKROOT)/usr/lib/swift"
+          - "$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$(PLATFORM_NAME)"
+      configs:
+        Debug:
+          GCC_PREPROCESSOR_DEFINITIONS:
+            - "$(inherited)"
+            - DEBUG=1
+            - PTRCALL_ENABLED=1
+            - TYPED_METHOD_BIND=1
+            - DEBUG_ENABLED=1
+            - DEBUG_MEMORY_ALLOC=1
+            - DISABLE_FORCED_INLINE=1
+            - DISABLE_DEPRECATED=1
+            - DEBUG_METHODS_ENABLED=1
+          OTHER_CFLAGS:
+            - "$(inherited)"
+            - "-fcxx-modules"
+            - "-fmodules"
+            - "-g"
+          OTHER_CPLUSPLUSFLAGS:
+            - "$(inherited)"
+            - "-fcxx-modules"
+            - "-fmodules"
+            - "-g"
+        Release:
+          GCC_PREPROCESSOR_DEFINITIONS:
+            - "$(inherited)"
+            - PTRCALL_ENABLED=1
+            - TYPED_METHOD_BIND=1
+          OTHER_CFLAGS:
+            - "$(inherited)"
+            - "-fcxx-modules"
+            - "-fmodules"
+            - "-g"
+          OTHER_CPLUSPLUSFLAGS:
+            - "$(inherited)"
+            - "-fcxx-modules"
+            - "-fmodules"
+            - "-g"

@@ -10,7 +10,7 @@ deinitialization="uninitialize_godotx_firebase_core_module"
 
 linked=[]
 
-embedded=["FBLPromises.xcframework", "FirebaseAnalytics.xcframework", "FirebaseCore.xcframework", "FirebaseCoreInternal.xcframework", "FirebaseInstallations.xcframework", "GoogleAdsOnDeviceConversion.xcframework", "GoogleAppMeasurement.xcframework", "GoogleAppMeasurementIdentitySupport.xcframework", "GoogleUtilities.xcframework", "nanopb.xcframework"]
+embedded=["FBLPromises.xcframework", "FirebaseAnalytics.xcframework", "FirebaseCore.xcframework", "FirebaseCoreInternal.xcframework", "FirebaseInstallations.xcframework", "GoogleAdsOnDeviceConversion.xcframework", "GoogleAppMeasurement.xcframework", "GoogleAppMeasurementIdentitySupport.xcframework", "GoogleDataTransport.xcframework", "GoogleUtilities.xcframework", "nanopb.xcframework"]
 
 system=["UserNotifications.framework", "UIKit.framework", "Foundation.framework"]
 

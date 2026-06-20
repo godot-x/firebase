@@ -54,6 +54,51 @@ class AppleExportPlugin extends EditorExportPlugin:
 			"default_value": "res://GoogleService-Info.plist"
 		})
 
+		# Enable Core
+		options.append({
+			"option": {
+				"name": "firebase/enable_core",
+				"type": TYPE_BOOL
+			},
+			"default_value": true
+		})
+
+		# Enable Analytics
+		options.append({
+			"option": {
+				"name": "firebase/enable_analytics",
+				"type": TYPE_BOOL
+			},
+			"default_value": false
+		})
+
+		# Enable Crashlytics
+		options.append({
+			"option": {
+				"name": "firebase/enable_crashlytics",
+				"type": TYPE_BOOL
+			},
+			"default_value": false
+		})
+
+		# Enable Messaging
+		options.append({
+			"option": {
+				"name": "firebase/enable_messaging",
+				"type": TYPE_BOOL
+			},
+			"default_value": false
+		})
+
+		# Enable Remote Config
+		options.append({
+			"option": {
+				"name": "firebase/enable_remote_config",
+				"type": TYPE_BOOL
+			},
+			"default_value": false
+		})
+
 		return options
 
 
@@ -171,6 +216,24 @@ class AndroidExportPlugin extends EditorExportPlugin:
 			"default_value": "25.0.2"
 		})
 
+		# Enable Remote Config
+		options.append({
+			"option": {
+				"name": "firebase/enable_remote_config",
+				"type": TYPE_BOOL
+			},
+			"default_value": false
+		})
+
+		# Remote Config version
+		options.append({
+			"option": {
+				"name": "firebase/remote_config_version",
+				"type": TYPE_STRING
+			},
+			"default_value": "22.0.1"
+		})
+
 		return options
 
 
@@ -201,6 +264,12 @@ class AndroidExportPlugin extends EditorExportPlugin:
 			dependencies.append("com.google.firebase:firebase-messaging:" + version)
 			print("[Firebase] Adding Messaging dependency (v%s)" % version)
 
+		# Remote Config
+		if get_option("firebase/enable_remote_config"):
+			var version = get_option("firebase/remote_config_version")
+			dependencies.append("com.google.firebase:firebase-config-ktx:" + version)
+			print("[Firebase] Adding Remote Config dependency (v%s)" % version)
+
 		return dependencies
 
 
@@ -222,6 +291,9 @@ class AndroidExportPlugin extends EditorExportPlugin:
 
 		if get_option("firebase/enable_messaging"):
 			modules.append("firebase_messaging")
+
+		if get_option("firebase/enable_remote_config"):
+			modules.append("firebase_remote_config")
 
 		# Search for AARs in each module's directory
 		for module in modules:
@@ -279,6 +351,41 @@ class AndroidExportPlugin extends EditorExportPlugin:
 
 		out_file.store_buffer(content)
 		out_file.close()
+		print("[Firebase] ✓ Copied google-services.json → " + dest_res_path)
 
-		print("[Firebase] Copied Android config to " + dest_res_path)
+		# Patch Gradle files to declare and apply the Crashlytics Gradle plugin.
+		# The plugin is required at build time to inject a build UUID into the APK.
+		# Without it the app crashes on launch when Crashlytics is enabled.
+		if get_option("firebase/enable_crashlytics"):
+			_patch_gradle_file(
+				"res://android/build/settings.gradle",
+				"id 'com.google.gms.google-services' version '4.4.2'",
+				"id 'com.google.gms.google-services' version '4.4.2'\n        id 'com.google.firebase.crashlytics' version '3.0.3'",
+				"settings.gradle"
+			)
+			_patch_gradle_file(
+				"res://android/build/build.gradle",
+				"id 'com.google.gms.google-services'",
+				"id 'com.google.gms.google-services'\n    id 'com.google.firebase.crashlytics'",
+				"build.gradle"
+			)
+
+
+	func _patch_gradle_file(res_path: String, needle: String, replacement: String, label: String) -> void:
+		if not FileAccess.file_exists(res_path):
+			push_warning("[Firebase] %s not found, skipping Crashlytics Gradle plugin injection" % label)
+			return
+		var f := FileAccess.open(res_path, FileAccess.READ)
+		var text := f.get_as_text()
+		f.close()
+		if "firebase.crashlytics" in text:
+			return
+		var patched := text.replace(needle, replacement)
+		if patched == text:
+			push_warning("[Firebase] Could not inject Crashlytics plugin into %s — pattern not found" % label)
+			return
+		var out := FileAccess.open(res_path, FileAccess.WRITE)
+		out.store_string(patched)
+		out.close()
+		print("[Firebase] ✓ Injected Crashlytics Gradle plugin into %s" % label)
 
