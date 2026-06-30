@@ -108,5 +108,37 @@ class FirebaseAnalyticsPlugin(godot: Godot) : GodotPlugin(godot) {
             emitSignal("analytics_error", e.message ?: "event_log_error")
         }
     }
+
+    @UsedByGodot
+    fun set_consent(consent: Dictionary) {
+        val ctx = activity ?: run {
+            emitSignal("analytics_error", "activity_null")
+            return
+        }
+        val map = mutableMapOf<FirebaseAnalytics.ConsentType, FirebaseAnalytics.ConsentStatus>()
+        fun put(key: String, type: FirebaseAnalytics.ConsentType) {
+            if (consent.containsKey(key)) {
+                map[type] = if (consent[key] == "granted")
+                    FirebaseAnalytics.ConsentStatus.GRANTED
+                else FirebaseAnalytics.ConsentStatus.DENIED
+            }
+        }
+        put("analytics_storage", FirebaseAnalytics.ConsentType.ANALYTICS_STORAGE)
+        put("ad_storage", FirebaseAnalytics.ConsentType.AD_STORAGE)
+        put("ad_user_data", FirebaseAnalytics.ConsentType.AD_USER_DATA)
+        put("ad_personalization", FirebaseAnalytics.ConsentType.AD_PERSONALIZATION)
+        if (map.isNotEmpty()) {
+            FirebaseAnalytics.getInstance(ctx).setConsent(map)
+        }
+    }
+
+    @UsedByGodot
+    fun set_analytics_collection_enabled(enabled: Boolean) {
+        val ctx = activity ?: run {
+            emitSignal("analytics_error", "activity_null")
+            return
+        }
+        FirebaseAnalytics.getInstance(ctx).setAnalyticsCollectionEnabled(enabled)
+    }
 }
 

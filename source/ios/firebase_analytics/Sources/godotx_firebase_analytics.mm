@@ -10,6 +10,8 @@ GodotxFirebaseAnalytics* GodotxFirebaseAnalytics::instance = nullptr;
 void GodotxFirebaseAnalytics::_bind_methods() {
     ClassDB::bind_method(D_METHOD("initialize"), &GodotxFirebaseAnalytics::initialize);
     ClassDB::bind_method(D_METHOD("log_event", "event_name", "params"), &GodotxFirebaseAnalytics::log_event);
+    ClassDB::bind_method(D_METHOD("set_consent", "consent"), &GodotxFirebaseAnalytics::set_consent);
+    ClassDB::bind_method(D_METHOD("set_analytics_collection_enabled", "enabled"), &GodotxFirebaseAnalytics::set_analytics_collection_enabled);
 
     ADD_SIGNAL(MethodInfo("analytics_initialized", PropertyInfo(Variant::BOOL, "success")));
     ADD_SIGNAL(MethodInfo("analytics_event_logged", PropertyInfo(Variant::STRING, "event_name")));
@@ -62,6 +64,43 @@ void GodotxFirebaseAnalytics::log_event(String event_name, Dictionary params) {
     }
     @catch (NSException *exception) {
         NSLog(@"[GodotxFirebaseAnalytics] Failed to log event: %@", exception.reason);
+        emit_signal("analytics_error", String::utf8([exception.reason UTF8String]));
+    }
+}
+
+static void put_consent(NSMutableDictionary* map, const Dictionary& consent, const char* key, FIRConsentType type) {
+    if (!consent.has(key)) {
+        return;
+    }
+    // FIRConsentType / FIRConsentStatus are NSString-based typed enums, so the
+    // constants are used directly as keys/values (no NSNumber boxing).
+    String value = consent[key];
+    map[type] = (value == "granted") ? FIRConsentStatusGranted : FIRConsentStatusDenied;
+}
+
+void GodotxFirebaseAnalytics::set_consent(Dictionary consent) {
+    @try {
+        NSMutableDictionary* map = [NSMutableDictionary dictionary];
+        put_consent(map, consent, "analytics_storage", FIRConsentTypeAnalyticsStorage);
+        put_consent(map, consent, "ad_storage", FIRConsentTypeAdStorage);
+        put_consent(map, consent, "ad_user_data", FIRConsentTypeAdUserData);
+        put_consent(map, consent, "ad_personalization", FIRConsentTypeAdPersonalization);
+        if (map.count > 0) {
+            [FIRAnalytics setConsent:map];
+        }
+    }
+    @catch (NSException *exception) {
+        NSLog(@"[GodotxFirebaseAnalytics] Failed to set consent: %@", exception.reason);
+        emit_signal("analytics_error", String::utf8([exception.reason UTF8String]));
+    }
+}
+
+void GodotxFirebaseAnalytics::set_analytics_collection_enabled(bool enabled) {
+    @try {
+        [FIRAnalytics setAnalyticsCollectionEnabled:enabled];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"[GodotxFirebaseAnalytics] Failed to set analytics collection enabled: %@", exception.reason);
         emit_signal("analytics_error", String::utf8([exception.reason UTF8String]));
     }
 }

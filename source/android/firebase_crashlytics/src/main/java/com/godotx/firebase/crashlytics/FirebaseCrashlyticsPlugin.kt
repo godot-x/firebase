@@ -161,5 +161,10 @@ class FirebaseCrashlyticsPlugin(godot: Godot) : GodotPlugin(godot) {
             emitSignal("crashlytics_error", e.message ?: "set_custom_value_error")
         }
     }
+
+    @UsedByGodot
+    fun set_crashlytics_collection_enabled(enabled: Boolean) {
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(enabled)
+    }
 }
 

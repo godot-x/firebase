@@ -249,6 +249,44 @@ func _on_analytics_initialized(success: bool):
         analytics.log_event("level_complete", params)
 ```
 
+#### GDPR / Consent Mode
+
+Firebase emits automatic events (e.g. `first_open`, `session_start`) at app startup, before GDScript runs. To prevent pre-consent data collection, disable collection in your exported app's manifest/plist, then re-enable at runtime after the user consents:
+
+**Android** (`AndroidManifest.xml`, inside `<application>`):
+
+```xml
+<meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+<meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+```
+
+**iOS** (`Info.plist`):
+
+```xml
+<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key><false/>
+<key>FirebaseCrashlyticsCollectionEnabled</key><false/>
+```
+
+After collecting consent (via UMP, a CMP, or your own UI):
+
+```gdscript
+func _on_user_consented(granted: bool) -> void:
+    var fb = Engine.get_singleton("GodotxFirebaseAnalytics")
+    var crash = Engine.get_singleton("GodotxFirebaseCrashlytics")
+    var state := "granted" if granted else "denied"
+    fb.set_consent({
+        "analytics_storage": state,
+        "ad_storage": state,
+        "ad_user_data": state,
+        "ad_personalization": state,
+    })
+    if granted:
+        fb.set_analytics_collection_enabled(true)
+        crash.set_crashlytics_collection_enabled(true)
+```
+
+On denial, call `set_consent` only — collection stays off. On revocation, call `set_analytics_collection_enabled(false)` and `set_crashlytics_collection_enabled(false)`.
+
 ### Firebase Crashlytics
 
 The native API exposes typed methods. For a single entry point that picks the right type from `value`, use the helper class `FirebaseCrashlyticsHelper` (in `addons/godotx_firebase/firebase_crashlytics_helper.gd`).
