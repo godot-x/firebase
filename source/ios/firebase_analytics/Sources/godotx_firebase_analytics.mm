@@ -72,8 +72,7 @@ static void put_consent(NSMutableDictionary* map, const Dictionary& consent, con
     if (!consent.has(key)) {
         return;
     }
-    // FIRConsentType / FIRConsentStatus are NSString-based typed enums, so the
-    // constants are used directly as keys/values (no NSNumber boxing).
+    // consent constants are string-typed enums, so they are stored directly as keys and values without numeric boxing.
     String value = consent[key];
     map[type] = (value == "granted") ? FIRConsentStatusGranted : FIRConsentStatusDenied;
 }

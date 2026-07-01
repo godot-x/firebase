@@ -41,14 +41,14 @@ This project provides native Firebase plugins for Godot, built as separate modul
 |-----------|---------|
 | Godot | 4.7-stable |
 | **iOS** | |
-| Firebase iOS SDK | 12.14.0 |
+| Firebase iOS SDK | 12.15.0 |
 | Min iOS | 13.0 |
 | **Android** | |
 | firebase-analytics | 23.2.0 |
 | firebase-crashlytics | 20.0.6 |
 | firebase-crashlytics-ndk | 20.0.6 |
-| firebase-messaging | 25.0.2 |
-| firebase-common | 22.0.1 |
+| firebase-messaging | 25.1.0 |
+| firebase-common | 22.1.0 |
 | Kotlin | 2.4.0 |
 | Min Android SDK | 24 (Android 7.0) |
 
@@ -271,6 +271,8 @@ After collecting consent (via UMP, a CMP, or your own UI):
 
 ```gdscript
 func _on_user_consented(granted: bool) -> void:
+    if not Engine.has_singleton("GodotxFirebaseAnalytics") or not Engine.has_singleton("GodotxFirebaseCrashlytics"):
+        return
     var fb = Engine.get_singleton("GodotxFirebaseAnalytics")
     var crash = Engine.get_singleton("GodotxFirebaseCrashlytics")
     var state := "granted" if granted else "denied"

@@ -86,6 +86,18 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 26
 text = "Log Screen View"
 
+[node name="GrantConsentButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Grant Consent"
+
+[node name="DenyConsentButton" type="Button" parent="VBoxContainer/ScrollContainer/ContentContainer"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+text = "Deny Consent"
+
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer/ScrollContainer/ContentContainer"]
 layout_mode = 2
 
@@ -182,6 +194,8 @@ text = "Copy Log"
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/InitializeButton" to="." method="_on_initialize_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/LogEventButton" to="." method="_on_log_event_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/LogScreenButton" to="." method="_on_log_screen_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/GrantConsentButton" to="." method="_on_grant_consent_pressed"]
+[connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/DenyConsentButton" to="." method="_on_deny_consent_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/LogCrashlyticsButton" to="." method="_on_log_crashlytics_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/SetUserIDButton" to="." method="_on_set_user_id_pressed"]
 [connection signal="pressed" from="VBoxContainer/ScrollContainer/ContentContainer/SetCustomValueButton" to="." method="_on_set_custom_value_pressed"]

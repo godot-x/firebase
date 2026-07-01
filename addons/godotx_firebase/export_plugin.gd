@@ -114,7 +114,7 @@ class AndroidExportPlugin extends EditorExportPlugin:
 				"name": "firebase/core_version",
 				"type": TYPE_STRING
 			},
-			"default_value": "22.0.1"
+			"default_value": "22.1.0"
 		})
 
 		# Enable Analytics
@@ -168,7 +168,7 @@ class AndroidExportPlugin extends EditorExportPlugin:
 				"name": "firebase/messaging_version",
 				"type": TYPE_STRING
 			},
-			"default_value": "25.0.2"
+			"default_value": "25.1.0"
 		})
 
 		return options
