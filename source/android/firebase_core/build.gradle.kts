@@ -34,6 +34,6 @@ dependencies {
     compileOnly("org.godotengine:godot:4.7.0.stable")
 
     // Firebase Core
-    implementation("com.google.firebase:firebase-common:22.0.1")
+    implementation("com.google.firebase:firebase-common:22.1.0")
 }
 

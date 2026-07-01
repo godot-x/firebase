@@ -137,6 +137,34 @@ func _on_log_screen_pressed() -> void:
 func _on_event_logged(event_name: String) -> void:
 	log_message("[Analytics] ✓ Event logged: " + event_name)
 
+func _on_grant_consent_pressed() -> void:
+	_apply_consent(true)
+
+func _on_deny_consent_pressed() -> void:
+	_apply_consent(false)
+
+func _apply_consent(granted: bool) -> void:
+	if not analytics:
+		log_message("[Analytics] Plugin not available")
+		return
+
+	var state := "granted" if granted else "denied"
+	log_message("\n[Analytics] Applying consent: " + state)
+
+	analytics.set_consent({
+		"analytics_storage": state,
+		"ad_storage": state,
+		"ad_user_data": state,
+		"ad_personalization": state,
+	})
+
+	# collection follows consent, so it is enabled on grant and disabled on revocation
+	analytics.set_analytics_collection_enabled(granted)
+	if crashlytics:
+		crashlytics.set_crashlytics_collection_enabled(granted)
+
+	log_message("[Analytics] ✓ Consent " + state + ", collection " + ("enabled" if granted else "disabled"))
+
 # ============== CRASHLYTICS ==============
 func _on_log_crashlytics_pressed() -> void:
 	if crashlytics:
