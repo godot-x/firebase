@@ -282,3 +282,10 @@ class AndroidExportPlugin extends EditorExportPlugin:
 
 		print("[Firebase] Copied Android config to " + dest_res_path)
 
+
+	func _get_android_manifest_application_element_contents(platform: EditorExportPlatform, debug: bool) -> String:
+		if not _supports_platform(platform):
+			return ""
+
+		return"""<meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+			<meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />"""
