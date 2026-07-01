@@ -17,6 +17,8 @@ public:
 
     void initialize();
     void log_event(String event_name, Dictionary params);
+    void set_consent(Dictionary consent);
+    void set_analytics_collection_enabled(bool enabled);
 
     GodotxFirebaseAnalytics();
     ~GodotxFirebaseAnalytics();

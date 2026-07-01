@@ -23,6 +23,7 @@ public:
     void set_custom_value_int(String key, int64_t value);
     void set_custom_value_bool(String key, bool value);
     void set_custom_value_float(String key, double value);
+    void set_crashlytics_collection_enabled(bool enabled);
 
     GodotxFirebaseCrashlytics();
     ~GodotxFirebaseCrashlytics();

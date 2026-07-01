@@ -16,6 +16,7 @@ void GodotxFirebaseCrashlytics::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_custom_value_int", "key", "value"), &GodotxFirebaseCrashlytics::set_custom_value_int);
     ClassDB::bind_method(D_METHOD("set_custom_value_bool", "key", "value"), &GodotxFirebaseCrashlytics::set_custom_value_bool);
     ClassDB::bind_method(D_METHOD("set_custom_value_float", "key", "value"), &GodotxFirebaseCrashlytics::set_custom_value_float);
+    ClassDB::bind_method(D_METHOD("set_crashlytics_collection_enabled", "enabled"), &GodotxFirebaseCrashlytics::set_crashlytics_collection_enabled);
 
     ADD_SIGNAL(MethodInfo("crashlytics_initialized", PropertyInfo(Variant::BOOL, "success")));
     ADD_SIGNAL(MethodInfo("crashlytics_error", PropertyInfo(Variant::STRING, "message")));
@@ -103,6 +104,16 @@ void GodotxFirebaseCrashlytics::set_custom_value_float(String key, double value)
     }
     @catch (NSException *exception) {
         NSLog(@"[GodotxFirebaseCrashlytics] Failed to set custom value: %@", exception.reason);
+        emit_signal("crashlytics_error", String::utf8([exception.reason UTF8String]));
+    }
+}
+
+void GodotxFirebaseCrashlytics::set_crashlytics_collection_enabled(bool enabled) {
+    @try {
+        [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:enabled];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"[GodotxFirebaseCrashlytics] Failed to set crashlytics collection enabled: %@", exception.reason);
         emit_signal("crashlytics_error", String::utf8([exception.reason UTF8String]));
     }
 }
