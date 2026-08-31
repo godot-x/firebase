@@ -39,6 +39,8 @@ void GodotxFirebaseMessaging::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_apns_token"), &GodotxFirebaseMessaging::get_apns_token);
     ClassDB::bind_method(D_METHOD("subscribe_to_topic", "topic"), &GodotxFirebaseMessaging::subscribe_to_topic);
     ClassDB::bind_method(D_METHOD("unsubscribe_from_topic", "topic"), &GodotxFirebaseMessaging::unsubscribe_from_topic);
+    ClassDB::bind_method(D_METHOD("set_auto_init_enabled", "enabled"), &GodotxFirebaseMessaging::set_auto_init_enabled);
+    ClassDB::bind_method(D_METHOD("is_auto_init_enabled"), &GodotxFirebaseMessaging::is_auto_init_enabled);
 
     ADD_SIGNAL(MethodInfo("messaging_permission_granted"));
     ADD_SIGNAL(MethodInfo("messaging_permission_denied"));
@@ -277,4 +279,13 @@ void GodotxFirebaseMessaging::unsubscribe_from_topic(String topic) {
             NSLog(@"[GodotxFirebaseMessaging] Successfully unsubscribed from topic: %@", nsTopic);
         }
     }];
+}
+
+void GodotxFirebaseMessaging::set_auto_init_enabled(bool enabled) {
+    NSLog(@"[GodotxFirebaseMessaging] Auto-init enabled: %d", enabled);
+    [FIRMessaging messaging].autoInitEnabled = enabled;
+}
+
+bool GodotxFirebaseMessaging::is_auto_init_enabled() {
+    return [FIRMessaging messaging].autoInitEnabled;
 }

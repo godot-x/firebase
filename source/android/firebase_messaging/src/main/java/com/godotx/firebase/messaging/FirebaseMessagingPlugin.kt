@@ -220,6 +220,43 @@ class FirebaseMessagingPlugin(godot: Godot) : GodotPlugin(godot) {
         }
     }
 
+    /**
+     * Enables or disables automatic generation of the FCM registration token.
+     *
+     * Firebase generates a registration token on first launch by default. Apps
+     * that must not collect a device identifier before the user has consented
+     * can disable that in the manifest:
+     *
+     *     <meta-data android:name="firebase_messaging_auto_init_enabled"
+     *                android:value="false" />
+     *
+     * and then call this method with `true` once consent is given. Without it
+     * there is no way to turn auto-init back on from GDScript, so the token
+     * would never be created and push would silently never arrive.
+     *
+     * The value is stored in Firebase's own preferences and survives restarts.
+     */
+    @UsedByGodot
+    fun set_auto_init_enabled(enabled: Boolean) {
+        try {
+            FirebaseMessaging.getInstance().isAutoInitEnabled = enabled
+            Log.d(TAG, "Auto-init enabled: $enabled")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error setting auto-init", e)
+            emitSignal("messaging_error", e.message ?: "auto_init_error")
+        }
+    }
+
+    @UsedByGodot
+    fun is_auto_init_enabled(): Boolean {
+        return try {
+            FirebaseMessaging.getInstance().isAutoInitEnabled
+        } catch (e: Exception) {
+            Log.e(TAG, "Error reading auto-init", e)
+            false
+        }
+    }
+
     @UsedByGodot
     fun unsubscribe_from_topic(topic: String) {
         try {

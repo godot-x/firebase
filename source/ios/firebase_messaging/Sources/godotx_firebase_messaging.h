@@ -20,6 +20,8 @@ public:
     void attempt_get_fcm_token();
     void subscribe_to_topic(String topic);
     void unsubscribe_from_topic(String topic);
+    void set_auto_init_enabled(bool enabled);
+    bool is_auto_init_enabled();
 
     GodotxFirebaseMessaging();
     ~GodotxFirebaseMessaging();

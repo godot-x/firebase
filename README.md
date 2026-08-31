@@ -384,6 +384,8 @@ func _on_error(message: String):
 - `get_apns_token()` - Get APNs device token (iOS only, requires permission first)
 - `subscribe_to_topic(topic: String)` - Subscribe to a topic
 - `unsubscribe_from_topic(topic: String)` - Unsubscribe from a topic
+- `set_auto_init_enabled(enabled: bool)` - Enable/disable automatic FCM token generation
+- `is_auto_init_enabled() -> bool` - Whether automatic token generation is on
 
 **Available Signals:**
 - `messaging_permission_granted()` - Notification permission granted by user
@@ -401,6 +403,8 @@ func _on_error(message: String):
   - Show the system permission dialog only if the user hasn't been asked before
 
 - **Permission vs Errors:** The `messaging_permission_denied` signal is the normal response when users decline notifications or have them disabled in settings. This is **not an error** - it's just feedback about permission status. The `messaging_error` signal is reserved for actual failures like network issues or API problems.
+
+- **Consent-gated tokens:** Firebase generates a registration token on first launch by default. If your app must not collect a device identifier before the user consents, disable auto-init in the manifest (`firebase_messaging_auto_init_enabled=false` on Android, `FirebaseMessagingAutoInitEnabled=false` in `Info.plist` on iOS) and call `set_auto_init_enabled(true)` once consent is given. Without that call the token is never created, so push silently never arrives.
 
 - **Token Retrieval:** Do not use `get_token()` to infer permission status. Always check permission first with `request_permission()` and wait for the appropriate signal (`messaging_permission_granted` or `messaging_permission_denied`).
 
