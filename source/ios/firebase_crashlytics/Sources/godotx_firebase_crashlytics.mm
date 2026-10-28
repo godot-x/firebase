@@ -16,6 +16,7 @@ void GodotxFirebaseCrashlytics::_bind_methods() {
     ClassDB::bind_method(D_METHOD("set_custom_value_int", "key", "value"), &GodotxFirebaseCrashlytics::set_custom_value_int);
     ClassDB::bind_method(D_METHOD("set_custom_value_bool", "key", "value"), &GodotxFirebaseCrashlytics::set_custom_value_bool);
     ClassDB::bind_method(D_METHOD("set_custom_value_float", "key", "value"), &GodotxFirebaseCrashlytics::set_custom_value_float);
+    ClassDB::bind_method(D_METHOD("record_error", "name", "message", "frames"), &GodotxFirebaseCrashlytics::record_error);
     ClassDB::bind_method(D_METHOD("set_crashlytics_collection_enabled", "enabled"), &GodotxFirebaseCrashlytics::set_crashlytics_collection_enabled);
 
     ADD_SIGNAL(MethodInfo("crashlytics_initialized", PropertyInfo(Variant::BOOL, "success")));
@@ -104,6 +105,31 @@ void GodotxFirebaseCrashlytics::set_custom_value_float(String key, double value)
     }
     @catch (NSException *exception) {
         NSLog(@"[GodotxFirebaseCrashlytics] Failed to set custom value: %@", exception.reason);
+        emit_signal("crashlytics_error", String::utf8([exception.reason UTF8String]));
+    }
+}
+
+// Records a non-fatal error, such as a script error the engine survived.
+// Each frame is "function<TAB>file<TAB>line", innermost first.
+void GodotxFirebaseCrashlytics::record_error(String name, String message, PackedStringArray frames) {
+    @try {
+        NSString* nsName = [NSString stringWithUTF8String:name.utf8().get_data()];
+        NSString* nsMessage = [NSString stringWithUTF8String:message.utf8().get_data()];
+        FIRExceptionModel* model = [FIRExceptionModel exceptionModelWithName:nsName reason:nsMessage];
+        NSMutableArray<FIRStackFrame*>* stack = [NSMutableArray array];
+        for (int i = 0; i < frames.size(); i++) {
+            PackedStringArray parts = frames[i].split("\t");
+            NSString* symbol = [NSString stringWithUTF8String:(parts.size() > 0 ? parts[0] : String()).utf8().get_data()];
+            NSString* file = [NSString stringWithUTF8String:(parts.size() > 1 ? parts[1] : String()).utf8().get_data()];
+            NSInteger line = parts.size() > 2 ? parts[2].to_int() : 0;
+            [stack addObject:[FIRStackFrame stackFrameWithSymbol:symbol file:file line:line]];
+        }
+        model.stackTrace = stack;
+        [[FIRCrashlytics crashlytics] recordExceptionModel:model];
+        NSLog(@"[GodotxFirebaseCrashlytics] Recorded error: %@: %@", nsName, nsMessage);
+    }
+    @catch (NSException *exception) {
+        NSLog(@"[GodotxFirebaseCrashlytics] Failed to record error: %@", exception.reason);
         emit_signal("crashlytics_error", String::utf8([exception.reason UTF8String]));
     }
 }

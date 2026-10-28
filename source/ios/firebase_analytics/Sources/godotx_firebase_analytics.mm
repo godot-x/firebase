@@ -12,6 +12,9 @@ void GodotxFirebaseAnalytics::_bind_methods() {
     ClassDB::bind_method(D_METHOD("log_event", "event_name", "params"), &GodotxFirebaseAnalytics::log_event);
     ClassDB::bind_method(D_METHOD("set_consent", "consent"), &GodotxFirebaseAnalytics::set_consent);
     ClassDB::bind_method(D_METHOD("set_analytics_collection_enabled", "enabled"), &GodotxFirebaseAnalytics::set_analytics_collection_enabled);
+    ClassDB::bind_method(D_METHOD("set_user_id", "user_id"), &GodotxFirebaseAnalytics::set_user_id);
+    ClassDB::bind_method(D_METHOD("set_user_property", "name", "value"), &GodotxFirebaseAnalytics::set_user_property);
+    ClassDB::bind_method(D_METHOD("reset_analytics_data"), &GodotxFirebaseAnalytics::reset_analytics_data);
 
     ADD_SIGNAL(MethodInfo("analytics_initialized", PropertyInfo(Variant::BOOL, "success")));
     ADD_SIGNAL(MethodInfo("analytics_event_logged", PropertyInfo(Variant::STRING, "event_name")));
@@ -100,6 +103,41 @@ void GodotxFirebaseAnalytics::set_analytics_collection_enabled(bool enabled) {
     }
     @catch (NSException *exception) {
         NSLog(@"[GodotxFirebaseAnalytics] Failed to set analytics collection enabled: %@", exception.reason);
+        emit_signal("analytics_error", String::utf8([exception.reason UTF8String]));
+    }
+}
+
+void GodotxFirebaseAnalytics::set_user_id(String user_id) {
+    @try {
+        // an empty id clears it
+        NSString* nsUserId = user_id.is_empty() ? nil : [NSString stringWithUTF8String:user_id.utf8().get_data()];
+        [FIRAnalytics setUserID:nsUserId];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"[GodotxFirebaseAnalytics] Failed to set user id: %@", exception.reason);
+        emit_signal("analytics_error", String::utf8([exception.reason UTF8String]));
+    }
+}
+
+void GodotxFirebaseAnalytics::set_user_property(String name, String value) {
+    @try {
+        NSString* nsName = [NSString stringWithUTF8String:name.utf8().get_data()];
+        // an empty value clears the property
+        NSString* nsValue = value.is_empty() ? nil : [NSString stringWithUTF8String:value.utf8().get_data()];
+        [FIRAnalytics setUserPropertyString:nsValue forName:nsName];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"[GodotxFirebaseAnalytics] Failed to set user property: %@", exception.reason);
+        emit_signal("analytics_error", String::utf8([exception.reason UTF8String]));
+    }
+}
+
+void GodotxFirebaseAnalytics::reset_analytics_data() {
+    @try {
+        [FIRAnalytics resetAnalyticsData];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"[GodotxFirebaseAnalytics] Failed to reset analytics data: %@", exception.reason);
         emit_signal("analytics_error", String::utf8([exception.reason UTF8String]));
     }
 }

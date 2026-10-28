@@ -251,6 +251,15 @@ func _on_analytics_initialized(success: bool):
         analytics.log_event("level_complete", params)
 ```
 
+User id and user properties (an empty string clears them), and resetting the
+app instance id, e.g. when the player deletes their account:
+
+```gdscript
+analytics.set_user_id("uid_123")
+analytics.set_user_property("install_version", "1.2.0")
+analytics.reset_analytics_data()
+```
+
 #### GDPR / Consent Mode
 
 Firebase emits automatic events (e.g. `first_open`, `session_start`) at app startup, before GDScript runs. To stay compliant, nothing should be collected until the user consents.
@@ -326,6 +335,12 @@ Or add a wrapper in your script and call `set_custom_value(key, value)`:
 ```gdscript
 func set_custom_value(key: String, value) -> void:
     FirebaseCrashlyticsHelper.set_custom_value(crashlytics, key, value)
+```
+
+**Non-fatal errors**, such as a script error the engine survived. Each frame is `"function\tfile\tline"`, innermost first; Crashlytics groups the issues by `name`:
+
+```gdscript
+crashlytics.record_error("ScriptError", "Invalid access to property 'x'", PackedStringArray(["_ready\tres://main.gd\t12"]))
 ```
 
 ### Firebase Messaging

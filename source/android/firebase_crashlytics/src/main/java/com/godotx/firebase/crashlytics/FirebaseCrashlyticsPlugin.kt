@@ -162,9 +162,41 @@ class FirebaseCrashlyticsPlugin(godot: Godot) : GodotPlugin(godot) {
         }
     }
 
+    /**
+     * Records a non-fatal error, such as a script error the engine survived.
+     * Each frame is "function<TAB>file<TAB>line", innermost first.
+     */
+    @UsedByGodot
+    fun record_error(name: String, message: String, frames: Array<String>) {
+        val crashlyticsInstance = crashlytics
+        if (crashlyticsInstance == null) {
+            Log.e(TAG, "Firebase Crashlytics not initialized")
+            emitSignal("crashlytics_error", "crashlytics_not_initialized")
+            return
+        }
+
+        try {
+            val error = GodotError(name, message)
+            error.stackTrace = frames.map { frame ->
+                val parts = frame.split("\t")
+                StackTraceElement(name, parts.getOrElse(0) { "" }, parts.getOrNull(1), parts.getOrNull(2)?.toIntOrNull() ?: -1)
+            }.toTypedArray()
+            crashlyticsInstance.recordException(error)
+            Log.d(TAG, "Recorded error: $name: $message")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to record error", e)
+            emitSignal("crashlytics_error", e.message ?: "record_error_error")
+        }
+    }
+
     @UsedByGodot
     fun set_crashlytics_collection_enabled(enabled: Boolean) {
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(enabled)
+    }
+
+    /** Crashlytics groups issues by type, so the type is named after `name`. */
+    private class GodotError(val name: String, message: String) : Exception(message) {
+        override fun toString(): String = "$name: $message"
     }
 }
 

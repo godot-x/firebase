@@ -140,5 +140,33 @@ class FirebaseAnalyticsPlugin(godot: Godot) : GodotPlugin(godot) {
         }
         FirebaseAnalytics.getInstance(ctx).setAnalyticsCollectionEnabled(enabled)
     }
-}
 
+    @UsedByGodot
+    fun set_user_id(user_id: String) {
+        val ctx = activity ?: run {
+            emitSignal("analytics_error", "activity_null")
+            return
+        }
+        // an empty id clears it
+        FirebaseAnalytics.getInstance(ctx).setUserId(if (user_id.isEmpty()) null else user_id)
+    }
+
+    @UsedByGodot
+    fun set_user_property(name: String, value: String) {
+        val ctx = activity ?: run {
+            emitSignal("analytics_error", "activity_null")
+            return
+        }
+        // an empty value clears the property
+        FirebaseAnalytics.getInstance(ctx).setUserProperty(name, if (value.isEmpty()) null else value)
+    }
+
+    @UsedByGodot
+    fun reset_analytics_data() {
+        val ctx = activity ?: run {
+            emitSignal("analytics_error", "activity_null")
+            return
+        }
+        FirebaseAnalytics.getInstance(ctx).resetAnalyticsData()
+    }
+}
